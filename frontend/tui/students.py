@@ -1,8 +1,10 @@
 import pymssql
 import os
+from dotenv import load_dotenv
 
 from option import Ok, Result
 from models import Student, Course, Grade, Teacher, Attendance
+from helper_tui import *
 
 load_dotenv()
 
@@ -44,6 +46,7 @@ class MenuStudent:
         student = Student()
 
         fields_data = [
+            ("", student.set_id),
             ("Enter student name: ", student.set_name),
             ("Enter student date of birth (YYYY-MM-DD): ", student.set_dob),
             ("Enter student email: ", student.set_email),
