@@ -12,19 +12,16 @@ if sys.version_info < (3, 11):
 else:
     from typing_extensions import Self
 
-
-class Student:
-    StudentID: int
-    StudentName: str
+class Teacher:
+    TeacherID: int
+    TeacherName: str
     DateOfBirth: str
     Email: str
-    PhoneNumber: str
 
-    
     @classmethod
     def count(cls):
         try:
-            with open('stu_count_data.txt') as fin:
+            with open('tea_count_data.txt') as fin:
                 i = int(fin.read())
         except IOError:
             i = 0
@@ -33,9 +30,8 @@ class Student:
         with open('count_data', 'w') as fout:
             fout.write(str(i))
     
-
     def set_id(self) -> Result[Self, int]:
-        self.StudentID = next(Student.id_iter)
+        self.TeacherID = next(Teacher.id_iter)
         return Ok(self)
     
     def set_name(self, name: str) -> Result[Self, str]:
@@ -43,9 +39,10 @@ class Student:
             return Err("Name cannot be empty")
         if any(char.isdigit() for char in name):
             return Err("Name cannot contain numbers")
-        self.StudentName = name
+        self.TeacherName = name
         return Ok(self)
     
+
     def set_dob(self, dob: str) -> Result[Self, str]:
         try:
             dob = datetime.strftime(datetime.strptime(dob, "%Y-%m-%d"), "%Y-%m-%d")
@@ -62,22 +59,10 @@ class Student:
         self.Email = email
         return Ok(self)
     
-    def set_phone(self, phone: str) -> Result[Self, str]:
-        if phone == "":
-            return Err("Phone number cannot be empty")
-        if not phone.isnumeric():
-            return Err("Phone number can only contain numbers")
-        if len(phone) < 10 or len(phone) > 11:
-            return Err("Phone number must have 10 or 11 digits")
-        self.PhoneNumber = phone
-        return Ok(self)
-    
     def __str__(self) -> str:
-        return textwrap.dedent(f"""
-        Student ID: {self.StudentID}
-        Student Name: {self.StudentName}
-        Date of birth: {self.DateOfBirth}
-        Email: {self.Email}
-        Phone number: {self.PhoneNumber}
-        """)
-    
+        return textwrap.dedent(f"""\
+            TeacherID: {self.TeacherID}
+            TeacherName: {self.TeacherName}
+            DateOfBirth: {self.DateOfBirth}
+            Email: {self.Email}
+            """)
