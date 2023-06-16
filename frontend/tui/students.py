@@ -3,46 +3,42 @@ import os
 from dotenv import load_dotenv
 
 from option import Ok, Result
-from models import Student, Course, Grade, Teacher, Attendance
+from models import Student
 from helper_tui import *
-
-load_dotenv()
-
-server = os.getenv("SERVER")
-user = os.getenv("USER")
-password = os.getenv("PASSWORD")
-database = os.getenv("DATABASE")
-
-conn = pymssql.connect(server, user, password, database)
-cursor = conn.cursor()
+from database.mssql import cursor, conn
 
 class MenuStudent:
-    def start(self) -> tuple[bool, str]:
+    def start(self) -> Result[None,str]:
+        last_msg = ""
         while True:
-            user_input = input("""
-            Please select an option:
-            [1] Add new student
-            [2] Edit student
-            [3] Delete student
-            [4] View student
-            [5] View all students
-            [6] Back
-            """)
-            match user_input:
+            last_msg = refresh(last_msg)
+            student_menu = [
+                "[1] Add student",
+                "[2] Edit student",
+                "[3] Delete student",
+                "[4] View student",
+                "[5] View all students",
+                "[6] Back"
+            ]
+            choice = get_user_option_from_menu("Student Management",student_menu)
+            
+            match choice:
                 case "1":
-                    return self.add()
+                    last_msg = self.__add()
                 case "2":
-                    return self.edit()
+                    last_msg = self.__edit()
                 case "3":
-                    return self.delete()
+                    last_msg =  self.__delete()
                 case "4":
-                    return self.view()
+                    last_msg = self.__view()
                 case "5":
-                    return self.view_all()
+                    last_msg = self.__view_all()
                 case "6":
-                    return (True, "")
+                    return Ok(None)
+                case _:
+                    last_msg = "Invalid option. Please try again."
     
-    def add(self) -> str:
+    def __add(self) -> str:
         student = Student()
 
         fields_data = [
@@ -56,9 +52,67 @@ class MenuStudent:
             if (msg := loop_til_valid(field, setter)) != "":
                 return msg
 
-    
+
         cursor.execute(""" 
-            INSERT INTO Students (StudentName, DateOfBirth, Email, PhoneNumber)
-            VALUES (%s, %s, %s, %s)
-            """, (Student.StudentName, Student.DateOfBirth, Student.Email, Student.PhoneNumber))
+            INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber)
+            VALUES (%s, %s, %s, %s, %s)
+            """, (student.StudentID, student.StudentName, student.DateOfBirth, student.Email, student.PhoneNumber))
         conn.commit()
+        return ""
+    
+    def __edit(self) -> str:
+        student = Student()
+        if (msg := loop_til_valid("Enter student ID: ", student.set_id)) != "":
+            return msg
+
+        fields_data = [
+            ("Enter student name: ", student.set_name),
+            ("Enter student date of birth (YYYY-MM-DD): ", student.set_dob),
+            ("Enter student email: ", student.set_email),
+            ("Enter student phone number: ", student.set_phone)
+        ]
+        for (field, setter) in fields_data:
+            if (msg := loop_til_valid(field, setter)) != "":
+                return msg
+
+        cursor.execute("""
+            UPDATE Students
+            SET StudentName = %s, DateOfBirth = %s, Email = %s, PhoneNumber = %s
+            WHERE StudentID = %s
+            """, (student.StudentName, student.DateOfBirth, student.Email, student.PhoneNumber, student.StudentID))
+        conn.commit()
+        return ""
+    
+    def __delete(self) -> str:
+        student = Student()
+        if (msg := loop_til_valid("Enter student ID: ", student.set_id)) != "":
+            return msg
+
+        cursor.execute("""
+            DELETE FROM Students
+            WHERE StudentID = %s
+            """, (student.StudentID))
+        conn.commit()
+        return ""
+    
+    def __view(self) -> str:
+        student = Student()
+        if (msg := loop_til_valid("Enter student ID: ", student.set_id)) != "":
+            return msg
+
+        cursor.execute("""
+            SELECT * FROM Students
+            WHERE StudentID = %s
+            """, (student.StudentID))
+        row = cursor.fetchone()
+        print(row)
+        return ""
+    
+    def __view_all(self) -> str:
+        cursor.execute("""
+            SELECT * FROM Students
+            """)
+        rows = cursor.fetchall()
+        print(rows)
+        return ""
+    
