@@ -18,6 +18,7 @@ class Grades:
     StudentID: int
     CourseID: str
     Grade: int
+    Credits: int
 
     def set_student_id(self, id: str) -> Result[Self, str]:
         if id == "":
@@ -45,5 +46,15 @@ class Grades:
         if int(grade) < 0 or int(grade) > 10:
             return Err("Grade must be in range [0, 10]")
         self.Grade = int(grade)
+        return Ok(self)
+    
+    def set_credits(self, credits: str) -> Result[Self, str]:
+        if credits == "":
+            return Err("Credits cannot be empty")
+        if not credits.isnumeric():
+            return Err("Credits must be a number")
+        if int(credits) < 0 or int(credits) > 5:
+            return Err("Credits must be in range [0, 5]")
+        self.Credits = int(credits)
         return Ok(self)
     
