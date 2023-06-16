@@ -21,7 +21,7 @@ class Teacher:
     @classmethod
     def count(cls):
         try:
-            with open('tea_count_data.txt') as fin:
+            with open('te_count_data.txt') as fin:
                 i = int(fin.read())
         except IOError:
             i = 0
