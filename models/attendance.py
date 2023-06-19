@@ -4,6 +4,7 @@ import sys
 import textwrap
 from datetime import datetime
 from option import Result, Ok, Err
+from database.mssql import cursor, conn
 import itertools
 
 
@@ -23,12 +24,20 @@ class Attendance:
             return Err("ID cannot be empty")
         if not id.isnumeric():
             return Err("ID must be a number")
+        cursor.execute("SELECT * FROM Students WHERE StudentID = %s", (id))
+        result = cursor.fetchone()
+        if result is None:
+            return Err("StudentID does not exist")
         self.StudentID = int(id)
         return Ok(self)
     
     def set_course_id(self, id: str) -> Result[Self, str]:
         if id == "":
             return Err("ID cannot be empty")
+        cursor.execute("SELECT * FROM Courses WHERE CourseID = %s", (id))
+        result = cursor.fetchone()
+        if result is None:
+            return Err("CourseID does not exist")
         self.CourseID = id
         return Ok(self)
     
