@@ -58,7 +58,7 @@ class MenuStudent:
             VALUES (%s, %s, %s, %s, %s)
             """, (student.StudentID, student.StudentName, student.DateOfBirth, student.Email, student.PhoneNumber))
         conn.commit()
-        return ""
+        return "Student added successfully."
     
     def __edit(self) -> str:
         student = Student()
@@ -81,7 +81,7 @@ class MenuStudent:
             WHERE StudentID = %s
             """, (student.StudentName, student.DateOfBirth, student.Email, student.PhoneNumber, student.StudentID))
         conn.commit()
-        return ""
+        return "Student updated successfully."
     
     def __delete(self) -> str:
         student = Student()
@@ -112,7 +112,7 @@ class MenuStudent:
         cursor.execute("""
             SELECT * FROM Students
             """)
-        rows = cursor.fetchall()
-        print(rows)
+        for row in cursor:
+            print('row = %r' % (row,))
         return ""
     

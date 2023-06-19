@@ -119,8 +119,6 @@ class MenuCourses:
             return "No courses found."
         else:
             for row in result:
-                course = Courses()
-                course.CourseID, course.CourseName, course.TeacherID, course.Credits = row
-                print(course)
+                print('row = %r' % (row,))
         return ""
        

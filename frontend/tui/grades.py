@@ -58,8 +58,8 @@ class MenuGrades:
             VALUES (%s, %s, %s)
             """, (grade.StudentID, grade.CourseID, grade.Grade))
         conn.commit()
-
-        return "Grade added successfully."
+        print("Grade added successfully.")
+        return ""
     
     def __edit(self) -> str:
         grade = Grades()
@@ -79,8 +79,8 @@ class MenuGrades:
             WHERE StudentID = %s AND CourseID = %s
             """, (grade.Grade, grade.StudentID, grade.CourseID))
         conn.commit()
-
-        return "Grade edited successfully."
+        print("Grade updated successfully.")
+        return ""
     
     def __delete(self) -> str:
         grade = Grades()
@@ -98,8 +98,8 @@ class MenuGrades:
             WHERE StudentID = %s AND CourseID = %s
             """, (grade.StudentID, grade.CourseID))
         conn.commit()
-
-        return "Grade deleted successfully."
+        print("Grade deleted successfully.")
+        return ""
     
     def __view(self) -> str:
         grade = Grades()
@@ -118,9 +118,11 @@ class MenuGrades:
             """, (grade.StudentID, grade.CourseID))
         result = cursor.fetchone()
         if result is None:
-            return "No such grade exists."
+            print("No such grade exists.")
+            return ""
         else:
-            return f"Grade: {result[2]}"
+            print(f"Grade: {result[2]}")
+            return ""
     
     def __view_all_for_student(self) -> str:
         grade = Grades()
@@ -138,9 +140,12 @@ class MenuGrades:
             """, (grade.StudentID))
         result = cursor.fetchall()
         if result is None:
-            return "No grades for this student exists."
+            print("No grades for this student exists.")
+            return ""
         else:
-            return f"Grade: {result[2]}"
+            for row in result:
+                print(f"Grade: {row[2]}")
+            return ""
         
     def __view_all_for_course(self) -> str:
         grade = Grades()
@@ -158,8 +163,11 @@ class MenuGrades:
             """, (grade.CourseID))
         result = cursor.fetchall()
         if result is None:
-            return "No grades for this course exists."
+            print("No grades for this course exists.")
+            return ""
         else:
-            return f"Grade: {result[2]}"
+            for row in result:
+                print('row = %r' % (row,))
+            return ""
     
     

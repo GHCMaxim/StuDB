@@ -130,5 +130,6 @@ class MenuAttendance:
         if len(result) == 0:
             return "No attendance found."
         else:
-            return str(result)
-
+            for row in result:
+                print('row = %r' % (row,))
+            return ""
