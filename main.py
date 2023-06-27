@@ -24,17 +24,17 @@ def menu():
         user_choice = get_user_option_from_menu("Main Menu", main_menu)
         respond: Result[None, str] = Ok(None)
         match user_choice:
-            case "1":
+            case 1:
                 respond = MenuStudent().start()
-            case "2":
+            case 2:
                 respond = MenuCourses().start()
-            case "3":
+            case 3:
                 respond = MenuGrades().start()
-            case "4":
+            case 4:
                 respond = MenuTeacher().start()
-            case "5":
+            case 5:
                 respond = MenuAttendance().start()
-            case "6":
+            case 6:
                 break
             case _:
                 print("Invalid option. Please try again.")
@@ -42,15 +42,17 @@ def menu():
             respond.unwrap()
         except (ValueError, TypeError) as e:
             print(e)
+        input("Press Enter to continue...")
 
 
 def main():
-    exists = cursor.execute("""
+    cursor.execute("""
         IF OBJECT_ID('Students', 'U') IS NOT NULL
             SELECT 1
         ELSE
             SELECT 0
         """)
+    exists = cursor.fetchone()[0]
 
     if exists == 0:
         print("It seems like you don't have a database yet. Creating tables....")
@@ -65,12 +67,21 @@ def main():
             )
             """)
         cursor.execute("""
+            CREATE TABLE Teachers(
+                TeacherID int not null,
+                TeacherName varchar(255) not null,
+                DateOfBirth date not null,
+                Email varchar(255) not null,
+                PRIMARY KEY (TeacherID)
+            )
+            """)
+        cursor.execute("""
             CREATE TABLE Courses(
                 CourseID varchar(255) not null,
                 CourseName varchar(255) not null,
                 TeacherID int not null,
                 Credits int not null,
-                PRIMARY KEY (CourseID)
+                PRIMARY KEY (CourseID),
                 FOREIGN KEY (TeacherID) REFERENCES Teachers(TeacherID)
             )
             """)
@@ -82,15 +93,6 @@ def main():
                 PRIMARY KEY (StudentID, CourseID),
                 FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
                 FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
-            )
-            """)
-        cursor.execute("""
-            CREATE TABLE Teachers(
-                TeacherID int not null,
-                TeacherName varchar(255) not null,
-                DateOfBirth date not null,
-                Email varchar(255) not null,
-                PRIMARY KEY (TeacherID)
             )
             """)
         cursor.execute("""
