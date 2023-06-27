@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from option import Ok, Result
 from models import Grades
-from helper_tui import *
+from ..helper_tui import *
 from database.mssql import cursor, conn
 
 class MenuGrades:
