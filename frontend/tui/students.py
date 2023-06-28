@@ -42,7 +42,7 @@ class MenuStudent:
         student = Student()
 
         fields_data = [
-            ("", student.set_id),
+            ("Enter student id: ", student.set_id),
             ("Enter student name: ", student.set_name),
             ("Enter student date of birth (YYYY-MM-DD): ", student.set_dob),
             ("Enter student email: ", student.set_email),
