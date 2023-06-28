@@ -5,6 +5,7 @@ import textwrap
 from datetime import datetime
 from option import Result, Ok, Err
 import itertools
+from database.mssql import cursor, conn
 
 
 if sys.version_info < (3, 11):
@@ -20,24 +21,21 @@ class Student:
     Email: str
     PhoneNumber: str
 
-    
-    @classmethod
-    def count(cls):
-        try:
-            with open('stu_count_data.txt') as fin:
-                i = int(fin.read())
-        except IOError:
-            i = 0
-        i+=1
-        cls.id_iter = itertools.count(i)
-        with open('count_data', 'w') as fout:
-            fout.write(str(i))
-    
-
-    def set_id(self) -> Result[Self, int]:
-        self.StudentID = next(Student.id_iter)
+    def set_id(self, id: str) -> Result[Self, str]:
+        if id == "":
+            return Err("Student ID cannot be empty")
+        if not id.isnumeric():
+            return Err("Student ID can only contain numbers")
+        cursor.execute("""
+            SELECT StudentID FROM Students
+            WHERE StudentID = %s
+            """, (id))
+        if cursor.fetchone() is not None:
+            return Err("Student ID already exists")
+        self.StudentID = int(id)
         return Ok(self)
-    
+        
+
     def set_name(self, name: str) -> Result[Self, str]:
         if name == "":
             return Err("Name cannot be empty")
