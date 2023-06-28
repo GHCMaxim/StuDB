@@ -23,17 +23,17 @@ class MenuTeacher:
             choice = get_user_option_from_menu("Teacher Management", teacher_menu)
             
             match choice:
-                case "1":
+                case 1:
                     last_msg = self.__add()
-                case "2":
+                case 2:
                     last_msg = self.__edit()
-                case "3":
+                case 3:
                     last_msg =  self.__delete()
-                case "4":
+                case 4:
                     last_msg = self.__view()
-                case "5":
+                case 5:
                     last_msg = self.__view_all()
-                case "6":
+                case 6:
                     return Ok(None)
                 case _:
                     last_msg = "Invalid option. Please try again."
