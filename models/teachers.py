@@ -4,6 +4,7 @@ import sys
 import textwrap
 from datetime import datetime
 from option import Result, Ok, Err
+from database.mssql import cursor, conn
 import itertools
 
 
@@ -18,22 +19,20 @@ class Teacher:
     DateOfBirth: str
     Email: str
 
-    @classmethod
-    def count(cls):
-        try:
-            with open('te_count_data.txt') as fin:
-                i = int(fin.read())
-        except IOError:
-            i = 0
-        i+=1
-        cls.id_iter = itertools.count(i)
-        with open('count_data', 'w') as fout:
-            fout.write(str(i))
-    
-    def set_id(self) -> Result[Self, int]:
-        self.TeacherID = next(Teacher.id_iter)
+    def set_id(self, id: str) -> Result[Self, str]:
+        if id == "":
+            return Err("Teacher ID cannot be empty")
+        if not id.isnumeric():
+            return Err("Teacher ID can only contain numbers")
+        cursor.execute("""
+            SELECT TeacherID FROM Teachers
+            WHERE TeacherID = %s
+            """, (id))
+        if cursor.fetchone() is not None:
+            return Err("Teacher ID already exists")
+        self.TeacherID = int(id)
         return Ok(self)
-    
+
     def set_name(self, name: str) -> Result[Self, str]:
         if name == "":
             return Err("Name cannot be empty")
