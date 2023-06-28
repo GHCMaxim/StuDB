@@ -34,6 +34,20 @@ class Student:
             return Err("Student ID already exists")
         self.StudentID = int(id)
         return Ok(self)
+    
+    def get_id(self, id: str) -> Result[Self, str]:
+        if id == "":
+            return Err("Student ID cannot be empty")
+        if not id.isnumeric():
+            return Err("Student ID can only contain numbers")
+        cursor.execute("""
+            SELECT StudentID FROM Students
+            WHERE StudentID = %s
+            """, (id))
+        if cursor.fetchone() is None:
+            return Err("Student ID doesn't exist. Please try again.")
+        self.StudentID = int(id)
+        return Ok(self)
         
 
     def set_name(self, name: str) -> Result[Self, str]:

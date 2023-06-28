@@ -32,6 +32,14 @@ class Teacher:
             return Err("Teacher ID already exists")
         self.TeacherID = int(id)
         return Ok(self)
+    
+    def get_id(self, id: str) -> Result[Self, str]:
+        if id == "":
+            return Err("Teacher ID cannot be empty")
+        if not id.isnumeric():
+            return Err("Teacher ID can only contain numbers")
+        self.TeacherID = int(id)
+        return Ok(self)
 
     def set_name(self, name: str) -> Result[Self, str]:
         if name == "":

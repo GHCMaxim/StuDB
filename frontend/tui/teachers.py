@@ -60,10 +60,10 @@ class MenuTeacher:
         return "Teacher added successfully."
     
     def __edit(self) -> str:
+        found = True
         teacher = Teacher()
-        if (msg := loop_til_valid("Enter teacher id: ", teacher.set_id)) != "":
+        if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
-        
         fields_data = [
             ("Enter teacher name: ", teacher.set_name),
             ("Enter teacher's date of birth: ", teacher.set_dob),
@@ -79,10 +79,10 @@ class MenuTeacher:
             """, (teacher.TeacherName, teacher.DateOfBirth, teacher.Email, teacher.TeacherID))
         conn.commit()
         return "Teacher edited successfully."
-    
+
     def __delete(self) -> str:
         teacher = Teacher()
-        if (msg := loop_til_valid("Enter teacher id: ", teacher.set_id)) != "":
+        if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
         cursor.execute("""
             DELETE FROM Teacher
@@ -93,7 +93,7 @@ class MenuTeacher:
     
     def __view(self) -> str:
         teacher = Teacher()
-        if (msg := loop_til_valid("Enter teacher id: ", teacher.set_id)) != "":
+        if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
         cursor.execute("""
             SELECT * FROM Teacher
