@@ -8,7 +8,7 @@ from frontend.tui import *
 
 def menu():
     while True:
-        clrscr()
+        # clrscr()
         last_msg = ""
         if last_msg:
             print(last_msg)
@@ -62,7 +62,7 @@ def main():
                 StudentName varchar(255) not null,
                 DateOfBirth date not null,
                 Email varchar(255) not null,
-                PhoneNumber int not null,
+                PhoneNumber varchar(10) not null,
                 PRIMARY KEY (StudentID) 
             )
             """)
