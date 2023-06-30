@@ -105,7 +105,6 @@ class MenuStudent:
             WHERE StudentID = %s
             """, (student.StudentID))
         row = cursor.fetchone()
-        # Print each part of the row, separated by a tab
         print("StudentID\tStudentName\tDateOfBirth\tEmail\tPhoneNumber")
         for item in row:
             print(item, end="\t")
