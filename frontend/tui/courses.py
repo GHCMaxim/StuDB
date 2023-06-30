@@ -62,7 +62,7 @@ class MenuCourses:
 
     def __edit(self) -> str:
         course = Courses()
-        if (msg := loop_til_valid("Enter course id: ", course.set_id)) != "":
+        if (msg := loop_til_valid("Enter course id: ", course.get_id)) != "":
             return msg
         
         fields_data = [
@@ -84,7 +84,7 @@ class MenuCourses:
     
     def __delete(self) -> str:
         course = Courses()
-        if (msg := loop_til_valid("Enter course id: ", course.set_id)) != "":
+        if (msg := loop_til_valid("Enter course id: ", course.get_id)) != "":
             return msg
         
         cursor.execute("""
@@ -96,7 +96,7 @@ class MenuCourses:
     
     def __view(self) -> str:
         course = Courses()
-        if (msg := loop_til_valid("Enter course id: ", course.set_id)) != "":
+        if (msg := loop_til_valid("Enter course id: ", course.get_id)) != "":
             return msg
         
         cursor.execute("""

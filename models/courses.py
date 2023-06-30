@@ -28,6 +28,16 @@ class Courses:
         self.CourseID = id
         return Ok(self)
 
+    def get_id(self, id: str) -> Result[Self, str]:
+        if id == "":
+            return Err("ID cannot be empty")
+        cursor.execute("SELECT * FROM Courses WHERE CourseID = %s", (id))
+        result = cursor.fetchone()
+        if result is None:
+            return Err("CourseID does not exist")
+        self.CourseID = id
+        return Ok(self)
+
     def set_name(self, name: str) -> Result[Self, str]:
         if name == "":
             return Err("Name cannot be empty")
