@@ -58,7 +58,7 @@ def main():
         print("It seems like you don't have a database yet. Creating tables....")
         cursor.execute("""
             CREATE TABLE Students(
-                StudentID int not null,
+                StudentID varchar(10) not null,
                 StudentName varchar(255) not null,
                 DateOfBirth date not null,
                 Email varchar(255) not null,
@@ -68,7 +68,7 @@ def main():
             """)
         cursor.execute("""
             CREATE TABLE Teachers(
-                TeacherID int not null,
+                TeacherID varchar(10) not null,
                 TeacherName varchar(255) not null,
                 DateOfBirth date not null,
                 Email varchar(255) not null,
