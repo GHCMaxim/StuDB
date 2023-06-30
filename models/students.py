@@ -26,6 +26,8 @@ class Student:
             return Err("Student ID cannot be empty")
         if not id.isnumeric():
             return Err("Student ID can only contain numbers")
+        if len(id) < 8:
+            return Err("Student ID must have at least 8 characters")
         cursor.execute("""
             SELECT StudentID FROM Students
             WHERE StudentID = %s
@@ -40,6 +42,8 @@ class Student:
             return Err("Student ID cannot be empty")
         if not id.isnumeric():
             return Err("Student ID can only contain numbers")
+        if len(id) < 8:
+            return Err("Student ID must have at least 8 characters")
         cursor.execute("""
             SELECT StudentID FROM Students
             WHERE StudentID = %s

@@ -24,6 +24,8 @@ class Teacher:
             return Err("Teacher ID cannot be empty")
         if not id.isnumeric():
             return Err("Teacher ID can only contain numbers")
+        if len(id) < 8:
+            return Err("Teacher ID must have at least 8 characters")
         cursor.execute("""
             SELECT TeacherID FROM Teachers
             WHERE TeacherID = %s
@@ -38,6 +40,14 @@ class Teacher:
             return Err("Teacher ID cannot be empty")
         if not id.isnumeric():
             return Err("Teacher ID can only contain numbers")
+        if len(id) < 8:
+            return Err("Teacher ID must have at least 8 characters")
+        cursor.execute("""
+            SELECT TeacherID FROM Teachers
+            WHERE TeacherID = %s
+            """, (id))
+        if cursor.fetchone() is None:
+            return Err("Teacher ID doesn't exist. Please try again.")
         self.TeacherID = int(id)
         return Ok(self)
 
