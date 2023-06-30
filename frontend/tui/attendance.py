@@ -117,19 +117,24 @@ class MenuAttendance:
             WHERE StudentID = %s AND CourseID = %s AND Date = %s
             """, (attendance.StudentID, attendance.CourseID, attendance.AttendanceDate))
         result = cursor.fetchall()
-        if len(result) == 0:
+        if result is None:
             return "Attendance not found."
         else:
-            return str(result)
+            print(f"StudentID\tCourseID\tDate\tStatus")
+            for row in result:  
+                print(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}")
+            return ""
+
         
     def __view_all(self) -> str:
         cursor.execute("""
             SELECT * FROM Attendance
             """)
         result = cursor.fetchall()
-        if len(result) == 0:
+        if result is None:
             return "No attendance found."
         else:
+            print(f"StudentID\tCourseID\tDate\tStatus")
             for row in result:
-                print('row = %r' % (row,))
+                print(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}")
             return ""
