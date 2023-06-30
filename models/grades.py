@@ -34,6 +34,10 @@ class Grades:
     def set_course_id(self, id: str) -> Result[Self, str]:
         if id == "":
             return Err("ID cannot be empty")
+        cursor.execute("SELECT * FROM Courses WHERE CourseID = %s", (id))
+        result = cursor.fetchone()
+        if result is None:
+            return Err("CourseID does not exist")
         self.CourseID = id
         return Ok(self)
     
