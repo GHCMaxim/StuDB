@@ -105,14 +105,22 @@ class MenuStudent:
             WHERE StudentID = %s
             """, (student.StudentID))
         row = cursor.fetchone()
-        print(row)
+        # Print each part of the row, separated by a tab
+        print("StudentID\tStudentName\tDateOfBirth\tEmail\tPhoneNumber")
+        for item in row:
+            print(item, end="\t")
+        input("Press Enter to continue...")
         return ""
     
     def __view_all(self) -> str:
         cursor.execute("""
             SELECT * FROM Students
             """)
-        for row in cursor:
-            print('row = %r' % (row,))
+        rows = cursor.fetchall()
+        print("StudentID\tStudentName\tDateOfBirth\tEmail\tPhoneNumber")
+        for row in rows:
+            for item in row:
+                print(item, end="\t")
+            print()
         return ""
     
