@@ -106,8 +106,9 @@ class MenuCourses:
         result = cursor.fetchone()
         if result is None:
             return "Course not found."
-        course.CourseID, course.CourseName, course.TeacherID, course.Credits = result
-        print(result)
+        else:
+            print(f"CourseID\tCourseName\tTeacherID\tCredits")
+            print(f"{result[0]}\t{result[1]}\t{result[2]}\t{result[3]}")
         return ""
     
     def __view_all(self) -> str:
@@ -118,7 +119,8 @@ class MenuCourses:
         if result is None:
             return "No courses found."
         else:
+            print(f"CourseID\tCourseName\tTeacherID\tCredits")
             for row in result:
-                print('row = %r' % (row,))
+                print(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}")
         return ""
        
