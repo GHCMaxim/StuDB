@@ -77,9 +77,9 @@ def main():
             """)
         cursor.execute("""
             CREATE TABLE Courses(
-                CourseID varchar(255) not null,
+                CourseID varchar(10) not null,
                 CourseName varchar(255) not null,
-                TeacherID int not null,
+                TeacherID varchar(10) not null,
                 Credits int not null,
                 PRIMARY KEY (CourseID),
                 FOREIGN KEY (TeacherID) REFERENCES Teachers(TeacherID)
@@ -87,8 +87,8 @@ def main():
             """)
         cursor.execute("""
             CREATE TABLE Grades(
-                StudentID int not null,
-                CourseID varchar(255) not null,
+                StudentID varchar(10) not null,
+                CourseID varchar(10) not null,
                 Grade int not null,
                 PRIMARY KEY (StudentID, CourseID),
                 FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
@@ -97,7 +97,7 @@ def main():
             """)
         cursor.execute("""
             CREATE TABLE Attendance(
-                StudentID int not null,
+                StudentID varchar(10) not null,
                 CourseID varchar(255) not null,
                 AttendanceDate date not null,
                 AttendanceStatus bit not null,
