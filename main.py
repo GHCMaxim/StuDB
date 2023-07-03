@@ -8,7 +8,7 @@ from frontend.tui import *
 
 def menu():
     while True:
-        # clrscr()
+        clrscr()
         last_msg = ""
         if last_msg:
             print(last_msg)
@@ -98,7 +98,7 @@ def main():
         cursor.execute("""
             CREATE TABLE Attendance(
                 StudentID varchar(10) not null,
-                CourseID varchar(255) not null,
+                CourseID varchar(10) not null,
                 AttendanceDate date not null,
                 AttendanceStatus bit not null,
                 PRIMARY KEY (StudentID, CourseID),
