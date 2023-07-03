@@ -1,7 +1,3 @@
-import pymssql
-import os
-from dotenv import load_dotenv
-
 from option import Ok, Result
 from models import Attendance
 from ..helper_tui import *
