@@ -88,13 +88,24 @@ class MenuAttendance:
         for (field, setter) in fields_data:
             if (msg := loop_til_valid(field, setter)) != "":
                 return msg
-        
         cursor.execute("""
-            DELETE FROM Attendance
+            SELECT * FROM Attendance
             WHERE StudentID = %s AND CourseID = %s AND Date = %s
             """, (attendance.StudentID, attendance.CourseID, attendance.AttendanceDate))
-        conn.commit()
-        return "Attendance deleted successfully."
+        result = cursor.fetchall()
+        print(f"StudentID\tCourseID\tDate\tStatus")
+        for row in result:
+            print(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}")
+        confirm = input("Are you sure you want to delete this attendance? (y/n): ")
+        if confirm.lower() == "y":
+            cursor.execute("""
+                DELETE FROM Attendance
+                WHERE StudentID = %s AND CourseID = %s AND Date = %s
+                """, (attendance.StudentID, attendance.CourseID, attendance.AttendanceDate))
+            conn.commit()
+            return "Attendance deleted successfully."
+        else:
+            return ""
     
     def __view(self) -> str:
         attendance = Attendance()
