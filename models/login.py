@@ -34,3 +34,15 @@ class Login:
         self.role = role
         return Ok(self)
     
+    def get_username(self, username: str) -> Result[Login, str]:
+        if username == "":
+            return Err("Username cannot be empty")
+        self.username = username
+        return Ok(self)
+
+    def get_password(self, password: str) -> Result[Login, str]:
+        if password == "":
+            return Err("Password cannot be empty")
+        self.password = password
+        return Ok(self)
+    

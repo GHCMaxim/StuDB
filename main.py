@@ -8,6 +8,24 @@ from models import Login
 
 
 def menu():
+    print("Welcome to the Student Management System. Please login to continue.")
+    user = Login()
+    fields_data = [
+        ("Enter username: ", user.get_username),
+        ("Enter password: ", user.get_password)
+    ]
+    for (field, setter) in fields_data:
+        if (msg := loop_til_valid(field, setter)) != "":
+            print(msg)
+    cursor.execute("""
+        SELECT Role FROM Users WHERE Username = %s AND Password = %s
+        """, (user.username, user.password))
+    role = cursor.fetchone()
+    if role is None:
+        print("Invalid username or password. Please try again.")
+        input("Press Enter to continue...")
+        menu()
+
     while True:
         clrscr()
         last_msg = ""
@@ -79,11 +97,10 @@ def main():
         cursor.execute("""
             INSERT INTO Logins (Username, Password, Role)
             VALUES (%s, %s, %s)
-            """, (user.Username, user.Password, user.Role))
+            """, (user.username, user.password, user.role))
         conn.commit()
-        
-
-
+        print("Admin account created successfully.")
+        print("Creating the rest of the tables....")
         cursor.execute("""
             CREATE TABLE Students(
                 StudentID varchar(10) not null,
