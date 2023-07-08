@@ -4,6 +4,7 @@ from option import Ok, Result
 from frontend.helper_tui import *
 from database.mssql import cursor, conn
 from frontend.tui import *
+from models import Login
 
 
 def menu():
@@ -55,7 +56,34 @@ def main():
     exists = cursor.fetchone()[0]
 
     if exists == 0:
-        print("It seems like you don't have a database yet. Creating tables....")
+        print("It seems like this is the first time you booted this program. Creating tables....")
+        cursor.execute("""
+            CREATE TABLE Logins(
+                Username varchar(255) not null,
+                Password varchar(255) not null,
+                Role varchar(255) not null,
+                PRIMARY KEY (Username)
+            """)
+        conn.commit()
+        print("Please create an admin account.")
+        user = Login()
+        fields_data = [
+            ("Enter username: ", user.set_username),
+            ("Enter password: ", user.set_password),
+            ("Enter role: ", user.set_role)
+        ]
+        for (field, setter) in fields_data:
+            if (msg := loop_til_valid(field, setter)) != "":
+                print(msg)
+        
+        cursor.execute("""
+            INSERT INTO Logins (Username, Password, Role)
+            VALUES (%s, %s, %s)
+            """, (user.Username, user.Password, user.Role))
+        conn.commit()
+        
+
+
         cursor.execute("""
             CREATE TABLE Students(
                 StudentID varchar(10) not null,
