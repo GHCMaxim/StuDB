@@ -1,10 +1,6 @@
 from __future__ import annotations
-import re
 import sys
-import textwrap
-from datetime import datetime
 from option import Result, Ok, Err
-import itertools
 from database.mssql import cursor, conn
 
 if sys.version_info < (3, 11):

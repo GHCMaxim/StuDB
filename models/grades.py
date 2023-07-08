@@ -15,7 +15,7 @@ else:
     from typing_extensions import Self
 
 class Grades:
-    StudentID: int
+    StudentID: str
     CourseID: str
     Grade: int
    
@@ -28,7 +28,7 @@ class Grades:
         result = cursor.fetchone()
         if result is None:
             return Err("StudentID does not exist")
-        self.StudentID = int(id)
+        self.StudentID = id
         return Ok(self)
     
     def set_course_id(self, id: str) -> Result[Self, str]:
