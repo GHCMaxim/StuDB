@@ -9,10 +9,7 @@ import itertools
 
 
 
-if sys.version_info < (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from typing_extensions import Self
 
 class Grades:
     StudentID: str
