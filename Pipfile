@@ -8,8 +8,8 @@ option = "*"
 pymssql = "*"
 python-dotenv = "*"
 typing-extensions = "*"
+flask = "*"
 
 [dev-packages]
 
 [requires]
-
