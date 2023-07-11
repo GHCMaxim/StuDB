@@ -1,9 +1,56 @@
 from __future__ import annotations
-import sys
-from option import Result, Ok, Err
-from database.mssql import cursor, conn
 
-from typing_extensions import Self
+import sys
+
+from option import Err, Ok, Result
+
+from database.mssql import cursor, conn
+from flask import jsonify
+from flask_restful import Resource, request
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
+
+class CoursesAPI(Resource):
+    def get(self):
+        cursor.execute("SELECT * FROM Courses")
+        result = cursor.fetchall()
+
+        # course_id
+        #   - course_name: course_name
+        #   - teacher_id: teacher_id
+        #   - credits: credits
+        # ...
+
+        return_data = {}
+        for course in result:
+            return_data[course[0]] = {
+                "course_name": course[1],
+                "teacher_id": course[2],
+                "credits": course[3],
+            }
+        return jsonify(result), 200
+
+    def post(self):
+        data = request.get_json()
+        course_id, course_name, teacher_id, credits = (
+            data["course_id"],
+            data["course_name"],
+            data["teacher_id"],
+            data["credits"],
+        )
+
+        # write to the database, no need for Course class
+        cursor.execute(
+            "INSERT INTO Courses (CourseID, CourseName, TeacherID, Credits) VALUES (%s, %s, %s, %s)",
+            (course_id, course_name, teacher_id, credits),
+        )
+        conn.commit()
+
+        return jsonify({"message": "Course added successfully"}), 201
 
 class Courses:
     CourseID: str
@@ -38,7 +85,7 @@ class Courses:
             return Err("Name cannot contain numbers")
         self.CourseName = name
         return Ok(self)
-    
+
     def set_teacher_id(self, id: str) -> Result[Self, str]:
         if id == "":
             return Err("ID cannot be empty")
@@ -50,7 +97,7 @@ class Courses:
             return Err("TeacherID does not exist")
         self.TeacherID = int(id)
         return Ok(self)
-    
+
     def set_credits(self, credits: str) -> Result[Self, str]:
         if credits == "":
             return Err("Credits cannot be empty")

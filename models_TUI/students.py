@@ -1,14 +1,13 @@
 from __future__ import annotations
+
 import re
-import sys
 import textwrap
 from datetime import datetime
-from option import Result, Ok, Err
-import itertools
-from database.mssql import cursor, conn
 
-
+from option import Err, Ok, Result
 from typing_extensions import Self
+
+from database.mssql import cursor
 
 
 class Student:
@@ -25,15 +24,18 @@ class Student:
             return Err("Student ID can only contain numbers")
         if len(id) < 8:
             return Err("Student ID must have at least 8 characters")
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT StudentID FROM Students
             WHERE StudentID = %s
-            """, (id))
+            """,
+            (id),
+        )
         if cursor.fetchone() is not None:
             return Err("Student ID already exists")
         self.StudentID = int(id)
         return Ok(self)
-    
+
     def get_id(self, id: str) -> Result[Self, str]:
         if id == "":
             return Err("Student ID cannot be empty")
@@ -41,15 +43,17 @@ class Student:
             return Err("Student ID can only contain numbers")
         if len(id) < 8:
             return Err("Student ID must have at least 8 characters")
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT StudentID FROM Students
             WHERE StudentID = %s
-            """, (id))
+            """,
+            (id),
+        )
         if cursor.fetchone() is None:
             return Err("Student ID doesn't exist. Please try again.")
         self.StudentID = int(id)
         return Ok(self)
-        
 
     def set_name(self, name: str) -> Result[Self, str]:
         if name == "":
@@ -58,7 +62,7 @@ class Student:
             return Err("Name cannot contain numbers")
         self.StudentName = name
         return Ok(self)
-    
+
     def set_dob(self, dob: str) -> Result[Self, str]:
         try:
             dob = datetime.strftime(datetime.strptime(dob, "%Y-%m-%d"), "%Y-%m-%d")
@@ -66,7 +70,7 @@ class Student:
             return Err("Invalid date format. Please try again.")
         self.DateOfBirth = dob
         return Ok(self)
-    
+
     def set_email(self, email: str) -> Result[Self, str]:
         if email == "":
             return Err("Email cannot be empty")
@@ -74,7 +78,7 @@ class Student:
             return Err("Invalid email format. Please try again.")
         self.Email = email
         return Ok(self)
-    
+
     def set_phone(self, phone: str) -> Result[Self, str]:
         if phone == "":
             return Err("Phone number cannot be empty")
@@ -84,13 +88,14 @@ class Student:
             return Err("Phone number must have 10 or 11 digits")
         self.PhoneNumber = phone
         return Ok(self)
-    
+
     def __str__(self) -> str:
-        return textwrap.dedent(f"""
+        return textwrap.dedent(
+            f"""
         Student ID: {self.StudentID}
         Student Name: {self.StudentName}
         Date of birth: {self.DateOfBirth}
         Email: {self.Email}
         Phone number: {self.PhoneNumber}
-        """)
-    
+        """
+        )

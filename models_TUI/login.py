@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import sys
+from option import Err, Ok, Result
 
-from option import Result, Ok, Err
-from database.mssql import cursor, conn
+from database.mssql import cursor
+
 
 class Login:
     username: str
@@ -25,7 +25,7 @@ class Login:
             return Err("Password cannot be empty")
         self.password = password
         return Ok(self)
-    
+
     def set_role(self, role: str) -> Result[Login, str]:
         if role == "":
             return Err("Role cannot be empty")
@@ -33,7 +33,7 @@ class Login:
             return Err("Role must be either Student, Teacher or Admin")
         self.role = role
         return Ok(self)
-    
+
     def get_username(self, username: str) -> Result[Login, str]:
         if username == "":
             return Err("Username cannot be empty")
@@ -45,4 +45,3 @@ class Login:
             return Err("Password cannot be empty")
         self.password = password
         return Ok(self)
-    
