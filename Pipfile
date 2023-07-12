@@ -9,7 +9,11 @@ pymssql = "*"
 python-dotenv = "*"
 typing-extensions = "*"
 flask = "*"
+flask-restful = "*"
 
 [dev-packages]
+ruff = "*"
+black = "*"
+isort = "*"
 
 [requires]
