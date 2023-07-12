@@ -4,7 +4,7 @@ from .COLORS import BCOLORS, FCOLORS
 from .get_user_option_from_list import get_user_option_from_list
 from .get_user_option_from_menu import get_user_option_from_menu
 from .listing import listing
-from .loop_til_valid import loop_til_valid 
+from .loop_til_valid import loop_til_valid
 from .refresh import refresh
 
 
