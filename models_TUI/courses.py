@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from option import Err, Ok, Result
-
-from database.mssql import cursor, conn
 from flask import jsonify
 from flask_restful import Resource, request
+from option import Err, Ok, Result
+
+from database.mssql import conn, cursor
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -27,11 +27,7 @@ class CoursesAPI(Resource):
 
         return_data = {}
         for course in result:
-            return_data[course[0]] = {
-                "course_name": course[1],
-                "teacher_id": course[2],
-                "credits": course[3],
-            }
+            return_data[course[0]] = {"course_name": course[1], "teacher_id": course[2], "credits": course[3]}
         return jsonify(result), 200
 
     def post(self):
@@ -51,6 +47,7 @@ class CoursesAPI(Resource):
         conn.commit()
 
         return jsonify({"message": "Course added successfully"}), 201
+
 
 class Courses:
     CourseID: str

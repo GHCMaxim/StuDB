@@ -1,7 +1,7 @@
 from option import Ok, Result
 
 from database.mssql import conn, cursor
-from models import Attendance
+from models_TUI import Attendance
 
 from ..helper_tui import *
 

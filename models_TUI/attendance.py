@@ -3,17 +3,17 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 
-
 from option import Err, Ok, Result
 
-from database.mssql import conn, cursor
+from database.mssql import cursor
 
 if sys.version_info >= (3, 11):
     from typing import Self
 else:
     from typing_extensions import Self
 
-class Attendance():
+
+class Attendance:
     StudentID: str
     CourseID: str
     AttendanceDate: str

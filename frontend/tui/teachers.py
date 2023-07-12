@@ -1,7 +1,10 @@
-from option import Ok, Result
 from models import Teacher
+from option import Ok, Result
+
+from database.mssql import conn, cursor
+
 from ..helper_tui import *
-from database.mssql import cursor, conn
+
 
 class MenuTeacher:
     def start(self) -> Result[None, str]:
@@ -14,17 +17,17 @@ class MenuTeacher:
                 "[3] Delete teacher",
                 "[4] View teacher",
                 "[5] View all teachers",
-                "[6] Back"
+                "[6] Back",
             ]
             choice = get_user_option_from_menu("Teacher Management", teacher_menu)
-            
+
             match choice:
                 case 1:
                     last_msg = self.__add()
                 case 2:
                     last_msg = self.__edit()
                 case 3:
-                    last_msg =  self.__delete()
+                    last_msg = self.__delete()
                 case 4:
                     last_msg = self.__view()
                 case 5:
@@ -43,20 +46,21 @@ class MenuTeacher:
             ("Enter teacher's date of birth: ", teacher.set_dob),
             ("Enter teacher email: ", teacher.set_email),
         ]
-        for (field, setter) in fields_data:
+        for field, setter in fields_data:
             if (msg := loop_til_valid(field, setter)) != "":
                 return msg
 
-
-        cursor.execute(""" 
+        cursor.execute(
+            """ 
             INSERT INTO Teacher (TeacherID, TeacherName, DateOfBirth, TeacherEmail)
             VALUES (%s, %s, %s, %s)
-            """, (teacher.TeacherID, teacher.TeacherName, teacher.DateOfBirth, teacher.Email))
+            """,
+            (teacher.TeacherID, teacher.TeacherName, teacher.DateOfBirth, teacher.Email),
+        )
         conn.commit()
         return "Teacher added successfully."
-    
+
     def __edit(self) -> str:
-        found = True
         teacher = Teacher()
         if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
@@ -65,14 +69,17 @@ class MenuTeacher:
             ("Enter teacher's date of birth: ", teacher.set_dob),
             ("Enter teacher email: ", teacher.set_email),
         ]
-        for (field, setter) in fields_data:
+        for field, setter in fields_data:
             if (msg := loop_til_valid(field, setter)) != "":
                 return msg
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE Teacher
             SET TeacherName = %s, DateOfBirth = %s, TeacherEmail = %s
             WHERE TeacherID = %s
-            """, (teacher.TeacherName, teacher.DateOfBirth, teacher.Email, teacher.TeacherID))
+            """,
+            (teacher.TeacherName, teacher.DateOfBirth, teacher.Email, teacher.TeacherID),
+        )
         conn.commit()
         return "Teacher edited successfully."
 
@@ -80,37 +87,45 @@ class MenuTeacher:
         teacher = Teacher()
         if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
-        cursor.execute("""
+        cursor.execute(
+            """
             DELETE FROM Teacher
             WHERE TeacherID = %s
-            """, (teacher.TeacherID))
+            """,
+            (teacher.TeacherID),
+        )
         conn.commit()
         return "Teacher deleted successfully."
-    
+
     def __view(self) -> str:
         teacher = Teacher()
         if (msg := loop_til_valid("Enter teacher id: ", teacher.get_id)) != "":
             return msg
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM Teacher
             WHERE TeacherID = %s
-            """, (teacher.TeacherID))
+            """,
+            (teacher.TeacherID),
+        )
         result = cursor.fetchone()
-        if result == None:
+        if result is None:
             return "Teacher not found."
         else:
             for row in result:
-                print('row = %r' % (row,))
+                print("row = %r" % (row,))
             return ""
-    
+
     def __view_all(self) -> str:
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM Teacher
-            """)
+            """
+        )
         result = cursor.fetchall()
-        if result == None:
+        if result is None:
             return "No teachers found."
         else:
             for row in result:
-                print('row = %r' % (row,))
+                print("row = %r" % (row,))
             return ""

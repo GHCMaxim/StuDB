@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import re
-import textwrap
 from datetime import datetime
+from textwrap import dedent
 
 from option import Err, Ok, Result
 from typing_extensions import Self
@@ -90,7 +90,7 @@ class Student:
         return Ok(self)
 
     def __str__(self) -> str:
-        return textwrap.dedent(
+        return dedent(
             f"""
         Student ID: {self.StudentID}
         Student Name: {self.StudentName}
