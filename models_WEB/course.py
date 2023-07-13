@@ -4,19 +4,21 @@ from flask import jsonify
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
+from frontend.helper_web.MESSAGE import CREATE_GENERAL_MSG, MISSING_ARGS_MSG
+from frontend.helper_web.validate_args import validate_args
 
 
 class Course(Resource):
     def get(self):
-        message_body = request.get_json()
-        if (message_body == {}) or ("course_id" not in message_body.keys()):
-            return jsonify({"message": "Bad Request"}), 400
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["course_id"]))
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
 
         course_id = message_body["course_id"]
         cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
         db_result = cursor.fetchone()
         if db_result is None:
-            return jsonify({"message": f"Course '{course_id}' Not Found"}), 404
+            return jsonify({"message": CREATE_GENERAL_MSG(action="not found", typeof_object="Course", id=course_id)}), 404
 
         return (
             jsonify(
@@ -34,19 +36,41 @@ class Course(Resource):
         )
 
     def post(self):
-        message_body = request.get_json()
-        not_enough_keys = any(
-            key not in message_body.keys() for key in ["course_id", "course_name", "teacher_id", "credits"]
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["course_id", "course_name", "teacher_id", "credits"])
         )
-        if (message_body == {}) or not_enough_keys:
-            return jsonify({"message": "Bad Request"}), 400
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+
+        course_id, course_name, teacher_id, credits = (
+            message_body["course_id"],
+            message_body["course_name"],
+            message_body["teacher_id"],
+            message_body["credits"],
+        )
+
+        cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
+        db_result = cursor.fetchone()
+        if db_result is not None:
+            return (
+                jsonify({"message": CREATE_GENERAL_MSG(action="already exists", typeof_object="Course", id=course_id)}),
+                409,
+            )
+
+        cursor.execute(
+            "INSERT INTO course VALUES (%s, %s, %s, %s)",
+            (course_id, course_name, teacher_id, credits),
+        )
+        conn.commit()
+
+        return jsonify({"message": CREATE_GENERAL_MSG(action="created", typeof_object="Course", id=course_id)}), 201
 
     def put(self):
-        message_body = request.get_json()
-        not_enough_keys = any(key not in message_body.keys() for key in ["course_id", "course_name", "teacher_id"])
-
-        if (message_body is None) or not_enough_keys:
-            return jsonify({"message": "Bad Request"}), 400
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["course_id", "course_name", "teacher_id"])
+        )
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
 
         course_id, course_name, teacher_id = (
             message_body["course_id"],
@@ -61,30 +85,28 @@ class Course(Resource):
                 "INSERT INTO course VALUES (%s, %s, %s)",
                 (course_id, course_name, teacher_id),
             )
+            conn.commit()
+            return jsonify({"message": CREATE_GENERAL_MSG(action="created", typeof_object="Course", id=course_id)}), 201
         else:
             cursor.execute(
                 "UPDATE course SET course_name = %s, teacher_id = %s WHERE course_id = %s",
                 (course_name, teacher_id, course_id),
             )
-        conn.commit()
-
-        return (
-            jsonify({"message": f"Course '{course_name}' {'created' if db_result is None else 'updated'}"}),
-            200,
-        )
+            conn.commit()
+            return jsonify({"message": CREATE_GENERAL_MSG(action="updated", typeof_object="Course", id=course_id)}), 200
 
     def delete(self):
-        message_body = request.get_json()
-        if (message_body == {}) or ("course_id" not in message_body.keys()):
-            return jsonify({"message": "Bad Request"}), 400
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["course_id"]))
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
         course_id = message_body["course_id"]
 
         cursor.execute(f"SELECT * FROM course WHERE course_id = {course_id}")
         db_result = cursor.fetchone()
         if db_result is None:
-            return jsonify({"message": "Not Found"}), 404
+            return jsonify({"message": CREATE_GENERAL_MSG(action="not found", typeof_object="Course", id=course_id)}), 404
 
         cursor.execute(f"DELETE FROM course WHERE course_id = {course_id}")
         conn.commit()
 
-        return jsonify({"message": f"Course '{db_result[1]}' deleted"}), 200
+        return jsonify({"message": CREATE_GENERAL_MSG(action="deleted", typeof_object="Course", id=course_id)}), 200

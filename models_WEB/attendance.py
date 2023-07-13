@@ -8,6 +8,16 @@ from flask_restful import Resource, request
 from option import Err, Ok, Result
 
 from database.mssql import conn, cursor
+from frontend.helper_web.MESSAGE import (
+    ATTENDANCE_CREATED,
+    ATTENDANCE_EXISTS,
+    ATTENDANCE_FOUND,
+    ATTENDANCE_NOT_FOUND,
+    ATTENDANCE_UPDATED_MSG,
+    CREATE_GENERAL_MSG,
+    MISSING_ARGS_MSG,
+)
+from frontend.helper_web.validate_args import validate_args
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -18,10 +28,11 @@ else:
 class Attendance(Resource):
     def get(self):
         """Get attendance"""
-        message_body = request.get_json()
-        not_enough_keys = any(keys not in message_body for keys in ("student_id", "course_id", "date"))
-        if (message_body == {}) or not_enough_keys:
-            return jsonify({"message": "Missing required fields"}), 400
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
+        )
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
         student_id, course_id, date = (
             message_body["student_id"],
             message_body["course_id"],
@@ -58,7 +69,7 @@ class Attendance(Resource):
         cursor.execute(queries[query_key][0], queries[query_key][1])
         db_result = cursor.fetchall()
         if db_result is None:
-            return jsonify({"message": "No attendance found"}), 404
+            return jsonify({"message": ATTENDANCE_NOT_FOUND}), 404
 
         # course
         #   student
@@ -76,14 +87,15 @@ class Attendance(Resource):
                 results[course_id][student_id] = {}
             results[course_id][student_id][date] = status
 
-        return jsonify({"message": "Attendance found", "data": results}), 200
+        return jsonify({"message": ATTENDANCE_FOUND, "data": results}), 200
 
     def post(self):
         """Create attendance"""
-        message_body = request.get_json()
-        not_enough_keys = any(keys not in message_body for keys in ("student_id", "course_id", "date", "status"))
-        if (message_body == {}) or not_enough_keys:
-            return jsonify({"message": "Missing required fields"}), 400
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
+        )
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
 
         student_id, course_id, date, status = (
             message_body["student_id"],
@@ -106,18 +118,23 @@ class Attendance(Resource):
             (student_id, course_id, date),
         )
         if cursor.fetchone() is not None:
-            return jsonify({"message": "Attendance already exists"}), 400
+            return jsonify({"message": ATTENDANCE_EXISTS}), 400
 
         cursor.execute(
             "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
             (student_id, course_id, date, status),
         )
         conn.commit()
-        return jsonify({"message": "Attendance created successfully"}), 201
+        return jsonify({"message": ATTENDANCE_CREATED}), 201
 
     def put(self):
         """Replace attendance"""
-        message_body = request.get_json()
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
+        )
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+
         student_id, course_id, date, status = (
             message_body["student_id"],
             message_body["course_id"],
@@ -142,10 +159,10 @@ class Attendance(Resource):
         if db_result is None:
             cursor.execute(
                 "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
-                (student_id, course_id, date, status),
+                (student_id, course_id, date, 1),
             )
             conn.commit()
-            return jsonify({"message": "Attendance created successfully"}), 201
+            return jsonify({"message": ATTENDANCE_CREATED}), 201
 
         status = 1 - int(db_result[3])
         cursor.execute(
@@ -153,14 +170,15 @@ class Attendance(Resource):
             (status, student_id, course_id, date),
         )
         conn.commit()
-        return jsonify({"message": "Attendance replaced successfully"}), 200
+        return jsonify({"message": ATTENDANCE_UPDATED_MSG(str(1 - status), str(status))}), 200
 
     def delete(self):
         """Delete attendance"""
-        message_body = request.get_json()
-        not_enough_keys = any(keys not in message_body for keys in ("student_id", "course_id", "date"))
-        if (message_body == {}) or not_enough_keys:
-            return jsonify({"message": "Missing required fields"}), 400
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
+        )
+        if not validate_success:
+            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
 
         student_id, course_id, date = (message_body["student_id"], message_body["course_id"], message_body["date"])
 
@@ -177,14 +195,14 @@ class Attendance(Resource):
             (student_id, course_id, date),
         )
         if cursor.fetchone() is None:
-            return jsonify({"message": "Attendance does not exist"}), 404
+            return jsonify({"message": ATTENDANCE_NOT_FOUND}), 404
 
         cursor.execute(
             "DELETE FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
             (student_id, course_id, date),
         )
         conn.commit()
-        return jsonify({"message": "Attendance deleted successfully"}), 200
+        return jsonify({"message": ATTENDANCE_CREATED}), 200
 
     def validate_student_id(self, id: str) -> Result[Self, tuple[str, int]]:
         if id == "":
@@ -194,7 +212,7 @@ class Attendance(Resource):
         cursor.execute("SELECT * FROM Students WHERE StudentID = %s", (id))
         db_result = cursor.fetchone()
         if db_result is None:
-            return Err(("StudentID does not exist", 404))
+            return Err((CREATE_GENERAL_MSG(action="not found", typeof_object="Student", id=id), 404))
         return Ok(self)
 
     def validate_course_id(self, id: str) -> Result[Self, tuple[str, int]]:
@@ -203,7 +221,7 @@ class Attendance(Resource):
         cursor.execute("SELECT * FROM Courses WHERE CourseID = %s", (id))
         db_result = cursor.fetchone()
         if db_result is None:
-            return Err(("CourseID does not exist", 404))
+            return Err((CREATE_GENERAL_MSG(action="not found", typeof_object="Course", id=id), 404))
         return Ok(self)
 
     def validate_date(self, date: str) -> Result[Self, tuple[str, int]]:
@@ -215,5 +233,5 @@ class Attendance(Resource):
 
     def validate_status(self, status: str) -> Result[Self, tuple[str, int]]:
         if status not in ("0", "1", ""):
-            return Err(("Status must be 0 or 1", 400))
+            return Err(("Status must be 0, 1 or empty", 400))
         return Ok(self)
