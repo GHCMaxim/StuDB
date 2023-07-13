@@ -9,5 +9,5 @@ user = os.getenv("USER")
 password = os.getenv("PASSWORD")
 database = os.getenv("DATABASE")
 
-conn = pymssql.connect(server, user, password, database)
+conn = pymssql.connect(server, user, password, database)  # type: ignore
 cursor = conn.cursor()
