@@ -15,109 +15,110 @@ const dataTypeEntryPoint = {
 
 const promptInput = {
     attendance: {
-        add: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            attendance: prompt('Enter attendance (1 or 0)'),
-            date: prompt('Enter date (YYYY-MM-DD, leave blank for today)')
-        }),
-        edit: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            date: prompt('Enter date (YYYY-MM-DD, leave blank for today)')
-        }),
-        delete: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            date: prompt('Enter date (YYYY-MM-DD, leave blank for today)')
-        }),
-        view: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            date: prompt('Enter date (YYYY-MM-DD, leave blank for today)')
-        }),
+        add: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            attendance: 'Enter attendance (1 or 0)',
+            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+        },
+        edit: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            date: 'Enter date (YYYY-MM-DD, leave blank for today)',
+            attendance: 'Enter attendance (1, 0 or leave blank to not change)'
+        },
+        delete: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+        },
+        view: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+        },
     },
     course: {
-        add: () => ({
-            course_id: prompt('Enter course ID'),
-            course_name: prompt('Enter course name'),
-            course_description: prompt('Enter course description'),
-            course_credit: prompt('Enter course credit')
-        }),
-        edit: () => ({
-            course_id: prompt('Enter the course ID to edit'),
-            course_name: prompt('Enter new course name'),
-            course_description: prompt('Enter new course description'),
-            course_credit: prompt('Enter new course credit')
-        }),
-        delete: () => ({
-            course_id: prompt('Enter the course ID to delete')
-        }),
-        view: () => ({
-            course_id: prompt('Enter the course ID to view')
-        }),
+        add: {
+            course_id: 'Enter course ID',
+            course_name: 'Enter course name',
+            course_description: 'Enter course description',
+            course_credit: 'Enter course credit'
+        },
+        edit: {
+            course_id: 'Enter the course ID to edit',
+            course_name: 'Enter new course name',
+            course_description: 'Enter new course description',
+            course_credit: 'Enter new course credit'
+        },
+        delete: {
+            course_id: 'Enter the course ID to delete'
+        },
+        view: {
+            course_id: 'Enter the course ID to view'
+        },
     },
     grade: {
-        add: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            grade: prompt('Enter grade')
-        }),
-        edit: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID'),
-            grade: prompt('Enter new grade')
-        }),
-        delete: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID')
-        }),
-        view: () => ({
-            student_id: prompt('Enter student ID'),
-            course_id: prompt('Enter course ID')
-        }),
+        add: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            grade: 'Enter grade',
+        },
+        edit: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID',
+            grade: 'Enter new grade'
+        },
+        delete: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID'
+        },
+        view: {
+            student_id: 'Enter student ID',
+            course_id: 'Enter course ID'
+        },
     },
     student: {
-        add: () => ({
-            student_name: prompt('Enter student name'),
-            student_id: prompt('Enter student ID'),
-            date_of_birth: prompt('Enter student DOB'),
-            email: prompt('Enter student email'),
-            phone_number: prompt('Enter student phone number')
-        }),
-        edit: () => ({
-            student_id: prompt('Enter the student ID to edit'),
-            student_name: prompt('Enter new student name'),
-            date_of_birth: prompt('Enter new DOB'),
-            email: prompt('Enter new email'),
-            phone_number: prompt('Enter new phone number')
-        }),
-        delete: () => ({
-            student_id: prompt('Enter the student ID to delete')
-        }),
-        view: () => ({
-            student_id: prompt('Enter the student ID to view')
-        }),
+        add: {
+            student_name: 'Enter student name',
+            student_id: 'Enter student ID',
+            date_of_birth: 'Enter student DOB',
+            email: 'Enter student email',
+            phone_number: 'Enter student phone number'
+        },
+        edit: {
+            student_id: 'Enter the student ID to edit',
+            student_name: 'Enter new student name',
+            date_of_birth: 'Enter new DOB',
+            email: 'Enter new email',
+            phone_number: 'Enter new phone number'
+        },
+        delete: {
+            student_id: 'Enter the student ID to delete'
+        },
+        view: {
+            student_id: 'Enter the student ID to view'
+        },
     },
     teacher: {
-        add: () => ({
-            teacher_name: prompt('Enter teacher name'),
-            teacher_id: prompt('Enter teacher ID'),
-            date_of_birth: prompt('Enter teacher DOB'),
-            email: prompt('Enter teacher email'),
-        }),
-        edit: () => ({
-            teacher_id: prompt('Enter the teacher ID to edit'),
-            teacher_name: prompt('Enter new teacher name'),
-            date_of_birth: prompt('Enter new DOB'),
-            email: prompt('Enter new email'),
-        }),
-        delete: () => ({
-            teacher_id: prompt('Enter the teacher ID to delete')
-        }),
-        view: () => ({
-            teacher_id: prompt('Enter the teacher ID to view')
-        }),
+        add: {
+            teacher_name: 'Enter teacher name',
+            teacher_id: 'Enter teacher ID',
+            date_of_birth: 'Enter teacher DOB',
+            email: 'Enter teacher email',
+        },
+        edit: {
+            teacher_id: 'Enter the teacher ID to edit',
+            teacher_name: 'Enter new teacher name',
+            date_of_birth: 'Enter new DOB',
+            email: 'Enter new email',
+        },
+        delete: {
+            teacher_id: 'Enter the teacher ID to delete'
+        },
+        view: {
+            teacher_id: 'Enter the teacher ID to view'
+        },
     },
 };
 
