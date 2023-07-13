@@ -1,4 +1,4 @@
-def validate_args(message_body, required_args) -> tuple[bool, dict, tuple[str]]:
+def validate_args(message_body, required_args: tuple[str]) -> tuple[bool, dict, tuple[str]]:
     """
     Validate the arguments passed in the message body.
 
