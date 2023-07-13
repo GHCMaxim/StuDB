@@ -10,7 +10,7 @@ from frontend.helper_web.validate_args import validate_args
 
 class TeacherAPI(Resource):
     def get(self):
-        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), ["teacher_id"])
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["teacher_id"]))
         if not validate_success:
             return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
         teacher_id = message_body["teacher_id"]
@@ -37,7 +37,7 @@ class TeacherAPI(Resource):
 
     def post(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), ["teacher_id", "teacher_name", "date_of_birth", "email"]
+            request.get_json(silent=True), tuple(["teacher_id", "teacher_name", "date_of_birth", "email"])
         )
         if not validate_success:
             return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
@@ -63,7 +63,7 @@ class TeacherAPI(Resource):
 
     def put(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), ["teacher_id", "teacher_name", "date_of_birth", "email"]
+            request.get_json(silent=True), tuple(["teacher_id", "teacher_name", "date_of_birth", "email"])
         )
         if not validate_success:
             return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
@@ -95,7 +95,7 @@ class TeacherAPI(Resource):
         )
 
     def delete(self):
-        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), ["teacher_id"])
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["teacher_id"]))
         if not validate_success:
             return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
         teacher_id = message_body["teacher_id"]
