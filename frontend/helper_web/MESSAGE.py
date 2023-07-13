@@ -8,6 +8,10 @@ ATTENDANCE_EXISTS = "Attendance already exists."
 ATTENDANCE_CREATED = "Attendance created."
 
 
+def CREATE_USER_MSG(action: str, username: str) -> str:
+    return f"User with username '{username}' {action.lower()}."
+
+
 def ATTENDANCE_UPDATED_MSG(old: str, new: str) -> str:
     return f"Attendance updated from {old} to {new}."
 
