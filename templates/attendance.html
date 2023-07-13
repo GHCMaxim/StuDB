@@ -43,11 +43,10 @@
             <div class="text-center">
                 <h1 class="display-4 mb-0 text-primary-emphasis">ABOUT ATTENDANCE</h1>
                 <h2 class="display-5 mt-0 text-primary-emphasis">Please select an action below</h2>
-                <button class="btn btn-outline-info btn-lg" onclick="addAttendance()">Add Attendance</button>
-                <button class="btn btn-outline-info btn-lg" onclick="editAttendance()">Edit Attendance</button>
-                <button class="btn btn-outline-info btn-lg" onclick="deleteAttendance()">Delete Attendance</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewAttendance()">View Attendance</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewAllAttendance()">View All Attendance</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('add', 'attendance')">Add Attendance</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('edit', 'attendance')">Edit Attendance</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('delete', 'attendance')">Delete Attendance</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('view', 'attendance')">View Attendance</button>
                 <button class="btn btn-outline-danger btn-lg" onclick="goBack()">Back</button>
             </div>
         </div>
