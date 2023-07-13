@@ -226,7 +226,7 @@ class AttendanceAPI(Resource):
 
     def validate_date(self, date: str) -> Result[Self, tuple[str, int]]:
         try:
-            date = datetime.strftime(datetime.strptime(date, "%Y-%m-%d"), "%Y-%m-%d")
+            date = datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m-%d")
         except ValueError:
             return Err(("Invalid date format. Must be YYYY-MM-DD", 400))
         return Ok(self)
