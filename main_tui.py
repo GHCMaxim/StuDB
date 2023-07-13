@@ -7,12 +7,12 @@ from frontend.helper_tui import *
 from frontend.helper_tui import clrscr, get_user_option_from_menu, loop_til_valid
 from frontend.tui import *
 from frontend.tui import MenuAttendance, MenuCourses, MenuGrades, MenuStudent, MenuTeacher
-from models_TUI import Login
+from models_TUI import User
 
 
 def menu():
     print("Welcome to the Student Management System. Please login to continue.")
-    user = Login()
+    user = User()
     fields_data = [("Enter username: ", user.get_username), ("Enter password: ", user.get_password)]
     for field, setter in fields_data:
         if (msg := loop_til_valid(field, setter)) != "":
@@ -93,7 +93,7 @@ def main():
         conn.commit()
 
         print("Please create an admin account.")
-        user = Login()
+        user = User()
         fields_data = [
             ("Enter username: ", user.set_username),
             ("Enter password: ", user.set_password),
