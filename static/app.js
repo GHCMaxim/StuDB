@@ -125,7 +125,11 @@ const promptInput = {
 const takeAction = (method, dataType) => {
     const url = dataTypeEntryPoint[dataType];
     const prompt = promptInput[dataType][method];
-    const data = prompt();
+    const data = {};
+    for (const key in prompt) {
+        data[key] = window.prompt(prompt[key]);
+        if (data[key] === null) return;
+    }
     const options = {
         method: actionMethod[method],
         headers: {
