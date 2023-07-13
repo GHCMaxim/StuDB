@@ -41,11 +41,10 @@
             <div class="text-center">
                 <h1 class="display-4 mb-0 text-primary-emphasis">ABOUT COURSE</h1>
                 <h2 class="display-5 mt-0 text-primary-emphasis">Please select an action below</h2>
-                <button class="btn btn-outline-info btn-lg" onclick="addCourse()">Add Course</button>
-                <button class="btn btn-outline-info btn-lg" onclick="editCourse()">Edit Course</button>
-                <button class="btn btn-outline-info btn-lg" onclick="deleteCourse()">Delete Course</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewCourse()">View Course</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewAllCourses()">View All Courses</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('add', 'course')">Add Course</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('edit', 'course')">Edit Course</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('delete', 'course')">Delete Course</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('view', 'course')">View Course</button>
                 <button class="btn btn-outline-danger btn-lg" onclick="goBack()">Back</button>
             </div>
         </div>

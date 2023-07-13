@@ -41,14 +41,10 @@
             <div class="text-center">
                 <h1 class="display-4 mb-0 text-primary-emphasis">ABOUT GRADE</h1>
                 <h2 class="display-5 mt-0 text-primary-emphasis">Please select an action below</h2>
-                <button class="btn btn-outline-info btn-lg" onclick="addStudent()">Add a Grade</button>
-                <button class="btn btn-outline-info btn-lg" onclick="editStudent()">Edit a Grade</button>
-                <button class="btn btn-outline-info btn-lg" onclick="deleteStudent()">Delete a Grade</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewStudent()">View a Grade</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewAllStudents()">View All Grades for a
-                    Student</button>
-                <button class="btn btn-outline-info btn-lg" onclick="viewAllStudents()">View All Grades for a
-                    Course</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('add', 'grade')">Add a Grade</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('view', 'grade')">View Grades</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('edit', 'grade')">Edit a Grade</button>
+                <button class="btn btn-outline-info btn-lg" onclick="takeAction('delete', 'grade')">Delete a Grade</button>
 
                 <button class="btn btn-outline-danger btn-lg" onclick="goBack()">Back</button>
             </div>
