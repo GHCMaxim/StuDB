@@ -23,6 +23,11 @@ def menu():
         print("Invalid username or password. Please try again.")
         input("Press Enter to continue...")
         menu()
+    else:
+        global_var["current_user"] = db_result[0]
+        global_var["current_user_role"] = db_result[2]
+        print(f"Welcome, {global_var['current_user']}.")
+        input("Press Enter to continue...")
 
     while True:
         clrscr()
