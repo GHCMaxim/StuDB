@@ -2,6 +2,7 @@ from textwrap import dedent
 
 from option import Ok, Result
 
+from database.login import global_var
 from database.mssql import conn, cursor
 from frontend.helper_tui import *
 from frontend.helper_tui import clrscr, get_user_option_from_menu, loop_til_valid
