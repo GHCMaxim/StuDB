@@ -17,11 +17,9 @@ def menu():
     for field, setter in fields_data:
         if (msg := loop_til_valid(field, setter)) != "":
             print(msg)
-    cursor.execute(
-        dedent("""SELECT Role FROM Users WHERE Username = %s AND Password = %s"""), (user.username, user.password)
-    )
-    role = cursor.fetchone()
-    if role is None:
+    cursor.execute(f"SELECT * FROM Logins WHERE Username = '{user.username}' AND Password = '{user.password}'")
+    db_result = cursor.fetchone()
+    if db_result is None:
         print("Invalid username or password. Please try again.")
         input("Press Enter to continue...")
         menu()
