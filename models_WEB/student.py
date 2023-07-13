@@ -19,7 +19,7 @@ else:
     from typing_extensions import Self
 
 
-class Student(Resource):
+class StudentAPI(Resource):
     def get(self):
         """Get students"""
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["student_id"]))

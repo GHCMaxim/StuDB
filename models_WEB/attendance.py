@@ -25,7 +25,7 @@ else:
     from typing_extensions import Self
 
 
-class Attendance(Resource):
+class AttendanceAPI(Resource):
     def get(self):
         """Get attendance"""
         validate_success, message_body, missing_args = validate_args(

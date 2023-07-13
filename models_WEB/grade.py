@@ -10,7 +10,7 @@ from frontend.helper_web.MESSAGE import CREATE_GRADE_MSG, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
 
 
-class Grade(Resource):
+class GradeAPI(Resource):
     def get(self):
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id"])

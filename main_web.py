@@ -42,11 +42,13 @@ def home():
     return render_template("home.html")
 
 
-api.add_resource(Attendance, "/api/attendance")
-api.add_resource(Course, "/api/course")
-api.add_resource(Student, "/api/student")
-api.add_resource(Teacher, "/api/teacher")
-api.add_resource(Grade, "/api/grade")
+api.add_resource(AttendanceAPI, "/api/attendance")
+api.add_resource(CourseAPI, "/api/course")
+api.add_resource(StudentAPI, "/api/student")
+api.add_resource(TeacherAPI, "/api/teacher")
+api.add_resource(GradeAPI, "/api/grade")
+api.add_resource(UserAPI, "/api/user")
+
 
 if __name__ == "__main__":
     app.run()

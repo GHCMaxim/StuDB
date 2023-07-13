@@ -8,7 +8,7 @@ from frontend.helper_web.MESSAGE import CREATE_GENERAL_MSG, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
 
 
-class Course(Resource):
+class CourseAPI(Resource):
     def get(self):
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["course_id"]))
         if not validate_success:
