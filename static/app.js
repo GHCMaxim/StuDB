@@ -13,8 +13,6 @@ const dataTypeEntryPoint = {
     teacher: '/api/teacher'
 };
 
-prompt()
-
 const promptInput = {
     attendance: {
         add: () => ({
