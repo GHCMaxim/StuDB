@@ -1,7 +1,8 @@
-from models import Student
 from option import Ok, Result
 
+from database.login import global_var
 from database.mssql import conn, cursor
+from models_TUI import Student
 
 from ..helper_tui import *
 
@@ -23,11 +24,20 @@ class MenuStudent:
 
             match choice:
                 case 1:
-                    last_msg = self.__add()
+                    if global_var["current_user_role"] == "Student":
+                        last_msg = "You do not have permission to do this."
+                    else:
+                        last_msg = self.__add()
                 case 2:
-                    last_msg = self.__edit()
+                    if global_var["current_user_role"] == "Student":
+                        last_msg = "You do not have permission to do this."
+                    else:
+                        last_msg = self.__edit()
                 case 3:
-                    last_msg = self.__delete()
+                    if global_var["current_user_role"] == "Student":
+                        last_msg = "You do not have permission to do this."
+                    else:
+                        last_msg = self.__delete()
                 case 4:
                     last_msg = self.__view()
                 case 5:
@@ -52,7 +62,7 @@ class MenuStudent:
                 return msg
 
         cursor.execute(
-            """ 
+            """
             INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber)
             VALUES (%s, %s, %s, %s, %s)
             """,
