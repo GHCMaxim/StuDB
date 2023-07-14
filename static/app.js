@@ -150,3 +150,32 @@ const takeAction = (method, dataType) => {
         )
         .catch(err => console.log(err));
 };
+
+const handleLoginRegister = (type) => {
+    const username = prompt("Enter username");
+    const password = prompt("Enter password");
+
+    // endpoint: /api/user
+    // login: POST
+    // register: PUT
+
+    const url = '/api/user';
+    const options = {
+        method: type === 'login' ? 'POST' : 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    };
+
+    fetch(url, options)
+        .then(res => res.json())
+        .then(res => {
+            window.alert(res.message);
+            if (res.status.toString().startsWith('2')) {
+                window.location.reload();
+            }
+        }
+        )
+        .catch(err => console.log(err));
+};
