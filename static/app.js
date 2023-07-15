@@ -149,34 +149,153 @@ const takeAction = async (method, dataType) => {
 
 // endregion
 
+// region: login/logout/register
+
+const handler = {
+    login: async () => {
+        const username = prompt("Enter username");
+        if (username === null) return;
+        const password = prompt("Enter password");
+        if (password === null) return;
+        response = await fetch("/api/user/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        });
+        const res = await response.json();
+        window.alert(res.message);
+        localStorage.setItem("session_key", res.data.session_key);
+        window.location.reload();
+    },
+    register: async () => {
+        const username = prompt("Enter username");
+        if (username === null) return;
+        const password = prompt("Enter password");
+        if (password === null) return;
+        let role = prompt(
+            "Enter role of the new account (Student, Teacher or Admin)",
+        );
+        if (role === null) return;
+        if (role === "") role = "Student";
+
+        while (
+            !["Student", "Teacher", "Admin"].includes(helper.capitalize(role))
+        ) {
+            window.alert("Role must be Student, Teacher or Admin");
+            role = prompt("Enter role of the new account");
+            if (role === null) return;
+            if (role === "") role = "Student";
         }
+        const session_key = localStorage.getItem("session_key");
+
+        response = await fetch("/api/user/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                role: helper.capitalize(role),
+                session_key: session_key,
+            }),
+        });
+        const res = await response.json();
+        window.alert(res.message);
+        window.location.reload();
+    },
+    logout: async () => {
+        const session_key = localStorage.getItem("session_key");
+        response = await fetch("/api/user/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                session_key: session_key,
+            }),
+        });
+        const res = await response.json();
+        window.alert(res.message);
+        localStorage.removeItem("session_key");
+        window.location.reload();
+    },
 };
 
-const handleLoginRegister = (type) => {
-    const username = prompt("Enter username");
-    const password = prompt("Enter password");
-
-    // endpoint: /api/user
-    // login: POST
-    // register: PUT
-
-    const url = '/api/user';
-    const options = {
-        method: type === 'login' ? 'POST' : 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    };
-
-    fetch(url, options)
-        .then(res => res.json())
-        .then(res => {
-            window.alert(res.message);
-            if (res.status.toString().startsWith('2')) {
-                window.location.reload();
-            }
-        }
-        )
-        .catch(err => console.log(err));
+const createLoginOutRegBtn = (type) => {
+    if (!["login", "logout", "register"].includes(type)) {
+        throw new Error("Invalid button type");
+    }
+    const newButton = document.createElement("button");
+    newButton.classList.add("btn", "btn-primary");
+    newButton.innerHTML = helper.capitalize(type);
+    newButton.onclick = handler[type];
+    return newButton;
 };
+
+// endregion
+
+const helper = {
+    capitalize: (str) => {
+        if (typeof str !== "string") return "";
+        if (str.length === 0) return str;
+        return str[0].toUpperCase() + str.slice(1);
+    },
+    isFirstUser: async () => {
+        const response = await fetch("/api/user/register", { method: "GET" });
+        return (await response.json()).message;
+    },
+    isSessionValid: async () => {
+        const response = await fetch("/api/user/validate_session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                session_key: localStorage.getItem("session_key"),
+            }),
+        });
+        const res = await response.json();
+        return_data = {
+            isValid: response.status === 200,
+            username: "",
+            role: "",
+        };
+        if (response.status === 200) {
+            return_data.username = res.data.username ? res.data.username : "";
+            return_data.role = res.data.role ? res.data.role : "";
+        }
+        return return_data;
+    },
+};
+
+// Login/logout/signup button on index page
+document.addEventListener("DOMContentLoaded", async () => {
+    const element = document.querySelector(".login-welcome-signup");
+    if (!element) return; // make sure the below code is only executed on the index page
+
+    if (!localStorage.getItem("session_key")) {
+        element.appendChild(createLoginOutRegBtn("login"));
+        if (await helper.isFirstUser())
+            element.appendChild(createLoginOutRegBtn("register"));
+        return;
+    }
+
+    const { isValid, username, role } = await helper.isSessionValid();
+    if (!isValid) {
+        element.appendChild(createLoginOutRegBtn("login"));
+        return;
+    }
+
+    const welcomeMsg = document.createElement("p");
+    welcomeMsg.innerHTML = `Welcome ${username} (${role})`;
+    element.appendChild(welcomeMsg);
+
+    if (role === "Admin") element.appendChild(createLoginOutRegBtn("register"));
+    element.appendChild(createLoginOutRegBtn("logout"));
+});
