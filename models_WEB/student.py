@@ -181,7 +181,6 @@ class StudentAPI(Resource):
             return Err(("Name cannot be empty", 400))
         if any(char.isdigit() for char in name):
             return Err(("Name cannot contain numbers", 400))
-        self.StudentName = name
         return Ok(self)
 
     def validate_date_of_birth(self, dob: str) -> Result[Self, tuple[str, int]]:
@@ -189,7 +188,6 @@ class StudentAPI(Resource):
             dob = datetime.strftime(datetime.strptime(dob, "%Y-%m-%d"), "%Y-%m-%d")
         except ValueError:
             return Err(("Invalid date format. Please try again.", 400))
-        self.DateOfBirth = dob
         return Ok(self)
 
     def validate_email(self, email: str) -> Result[Self, tuple[str, int]]:
@@ -197,7 +195,6 @@ class StudentAPI(Resource):
             return Err(("Email cannot be empty", 400))
         if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
             return Err(("Invalid email format. Please try again.", 400))
-        self.Email = email
         return Ok(self)
 
     def validate_phone_number(self, phone_number: str) -> Result[Self, tuple[str, int]]:
@@ -207,5 +204,4 @@ class StudentAPI(Resource):
             return Err(("Phone number can only contain numbers", 400))
         if len(phone_number) < 10:
             return Err(("Phone number must have at least 10 characters", 400))
-        self.PhoneNumber = phone_number
         return Ok(self)
