@@ -79,12 +79,8 @@ class StudentAPI(Resource):
                 return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err[1]
 
         cursor.execute(
-            dedent(
-                f"""
-            INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber)
-            VALUES ({student_id}, '{student_name}', '{date_of_birth}', '{email}', '{phone_number}')
-            """
-            )
+            "INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber) VALUES (%s, %s, %s, %s, %s)",
+            (student_id, student_name, date_of_birth, email, phone_number)
         )
 
         conn.commit()
@@ -129,13 +125,8 @@ class StudentAPI(Resource):
             )
         else:
             cursor.execute(
-                dedent(
-                    f"""
-                UPDATE Students
-                SET StudentName = '{student_name}', DateOfBirth = '{date_of_birth}', Email = '{email}', PhoneNumber = '{phone_number}'
-                WHERE StudentID = {student_id}
-                """
-                )
+                "UPDATE Students SET StudentName = %s, DateOfBirth = %s, Email = %s, PhoneNumber = %s WHERE StudentID = %s",
+                (student_name, date_of_birth, email, phone_number, student_id)
             )
         conn.commit()
         return (
