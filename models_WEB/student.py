@@ -101,29 +101,41 @@ class StudentAPI(Resource):
             message_body["phone_number"],
         )
 
-        for variable, validator in {
-            "student_id": self.validate_student_id,
-            "student_name": self.validate_student_name,
-            "date_of_birth": self.validate_date_of_birth,
-            "email": self.validate_email,
-            "phone_number": self.validate_phone_number,
-        }.items():
-            if (res := validator(message_body[variable])).is_err():
-                return jsonify({"message": res.unwrap_err()[0]}), res.unwrap_err()[1]
+        if (res := self.validate_student_id(student_id)).is_err:
+            return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
 
-        # if student not exists, create new student, else update student
         cursor.execute(f"SELECT StudentID FROM Students WHERE StudentID = {student_id}")
         db_result = cursor.fetchone()
         if db_result is None:
+            for variable, validator in {
+                "student_name": self.validate_student_name,
+                "date_of_birth": self.validate_date_of_birth,
+                "email": self.validate_email,
+                "phone_number": self.validate_phone_number,
+            }.items():
+                if (res := validator(message_body[variable])).is_err():
+                    return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err[1]
             cursor.execute(
-                dedent(
-                    f"""
-                INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber)
-                VALUES ({student_id}, '{student_name}', '{date_of_birth}', '{email}', '{phone_number}')
-                """
-                )
+                "INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber) VALUES (%s, %s, %s, %s, %s)",
+                (student_id, student_name, date_of_birth, email, phone_number)
             )
         else:
+            # TL;DR: if the value is empty, use the value from the database; else it must pass validation
+            for variable, validator in {
+                "student_name": self.validate_student_name,
+                "date_of_birth": self.validate_date_of_birth,
+                "email": self.validate_email,
+                "phone_number": self.validate_phone_number,
+            }.items():
+                if message_body[variable] == "":
+                    continue
+                if (res := validator(message_body[variable])).is_err:
+                    return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
+            student_name = db_result[1] if student_name == "" else student_name
+            date_of_birth = db_result[2] if date_of_birth == "" else date_of_birth
+            email = db_result[3] if email == "" else email
+            phone_number = db_result[4] if phone_number == "" else phone_number
+
             cursor.execute(
                 "UPDATE Students SET StudentName = %s, DateOfBirth = %s, Email = %s, PhoneNumber = %s WHERE StudentID = %s",
                 (student_name, date_of_birth, email, phone_number, student_id)
