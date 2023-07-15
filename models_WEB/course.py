@@ -67,15 +67,16 @@ class CourseAPI(Resource):
 
     def put(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["course_id", "course_name", "teacher_id"])
+            request.get_json(silent=True), tuple(["course_id", "course_name", "teacher_id", "credits"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
-        course_id, course_name, teacher_id = (
+        course_id, course_name, teacher_id, credits = (
             message_body["course_id"],
             message_body["course_name"],
             message_body["teacher_id"],
+            message_body["credits"],
         )
 
         cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
