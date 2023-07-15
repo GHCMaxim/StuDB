@@ -46,6 +46,8 @@ class TeacherAPI(Resource):
             message_body["date_of_birth"],
             message_body["email"],
         )
+        if (teacher_id == "") or (teacher_name == "") or (date_of_birth == "") or (email == ""):
+            return {"message": "all fields cannot be empty", "data": {}}, 400
 
         cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
         db_result = cursor.fetchone()
@@ -72,10 +74,14 @@ class TeacherAPI(Resource):
             message_body["date_of_birth"],
             message_body["email"],
         )
+        if teacher_id == "":
+            return {"message": "teacher_id cannot be empty", "data": {}}, 400
 
         cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
         db_result = cursor.fetchone()
         if db_result is None:
+            if (teacher_name == "") or (date_of_birth == "") or (email == ""):
+                return {"message": "all fields cannot be empty", "data": {}}, 400
             cursor.execute(f"INSERT INTO teacher VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth}', '{email}')")
         else:
             cursor.execute(
