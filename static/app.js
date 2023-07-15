@@ -124,7 +124,7 @@ const promptInput = {
     },
 };
 
-const takeAction = (method, dataType) => {
+const takeAction = async (method, dataType) => {
     const url = dataTypeEntryPoint[dataType];
     const prompt = promptInput[dataType][method];
     const data = {};
@@ -132,25 +132,24 @@ const takeAction = (method, dataType) => {
         data[key] = window.prompt(prompt[key]);
         if (data[key] === null) return;
     }
-    const options = {
+    response = await fetch(url, {
         method: actionMethod[method],
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-    };
+    });
+    const res = await response.json();
+    window.alert(res.message);
+    if (res.data) {
+        console.log(res.data);
+        window.alert("Open console to see the data");
+    }
+};
 
-    fetch(url, options)
-        .then(res => res.json())
-        .then(res => {
-            window.alert(res.message);
-            if (res.data) {
-                console.log(res.data);
-                window.alert("Open console to see the data");
-            }
+// endregion
+
         }
-        )
-        .catch(err => console.log(err));
 };
 
 const handleLoginRegister = (type) => {
