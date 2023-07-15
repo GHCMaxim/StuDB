@@ -18,7 +18,7 @@ def menu():
     for field, setter in fields_data:
         if (msg := loop_til_valid(field, setter)) != "":
             print(msg)
-    cursor.execute(f"SELECT * FROM Logins WHERE Username = '{user.username}' AND Password = '{user.password}'")
+    cursor.execute(f"SELECT * FROM Users WHERE Username = '{user.username}' AND Password = '{user.password}'")
     db_result = cursor.fetchone()
     if db_result is None:
         print("Invalid username or password. Please try again.")
@@ -72,7 +72,7 @@ def main():
     cursor.execute(
         dedent(
             """
-        IF OBJECT_ID('Students', 'U') IS NOT NULL
+        IF OBJECT_ID('Users', 'U') IS NOT NULL
             SELECT 1
         ELSE
             SELECT 0
@@ -85,13 +85,12 @@ def main():
         print("It seems like this is the first time you booted this program. Creating tables....")
         cursor.execute(
             dedent(
-                """
-            CREATE TABLE Logins(
-                Username varchar(255) not null,
-                Password varchar(255) not null,
-                Role varchar(255) not null,
-                PRIMARY KEY (Username)
-            """
+                """CREATE TABLE Users(
+            Username varchar(255) not null,
+            Password varchar(255) not null,
+            Role varchar(255) not null,
+            PRIMARY KEY (Username)
+            )"""
             )
         )
         conn.commit()
@@ -110,7 +109,7 @@ def main():
         cursor.execute(
             dedent(
                 """
-            INSERT INTO Logins (Username, Password, Role)
+            INSERT INTO Users (Username, Password, Role)
             VALUES (%s, %s, %s)
             """
             ),
@@ -136,7 +135,7 @@ def main():
         cursor.execute(
             dedent(
                 """
-            TE TABLE Teachers(
+            CREATE TABLE Teachers(
             TeacherID varchar(10) not null,
             TeacherName varchar(255) not null,
             DateOfBirth date not null,
