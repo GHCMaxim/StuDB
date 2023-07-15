@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
@@ -18,19 +19,21 @@ class TeacherAPI(Resource):
         cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
         row = cursor.fetchone()
         if row is None:
-            return {"message": CREATE_GENERAL_MSG(action="not found", typeof_object="teacher", id=teacher_id), "data": {}}, 404
+            return {
+                "message": CREATE_GENERAL_MSG(action="not found", typeof_object="teacher", id=teacher_id),
+                "data": {},
+            }, 404
 
         return (
-                {
-                    "message": CREATE_GENERAL_MSG(action="found", typeof_object="teacher", id=teacher_id),
-                    "data": {
-                        "teacher_id": row[0],
-                        "teacher_name": row[1],
-                        "date_of_birth": row[2],
-                        "email": row[3],
-                    },
-                }
-            ,
+            {
+                "message": CREATE_GENERAL_MSG(action="found", typeof_object="teacher", id=teacher_id),
+                "data": {
+                    "teacher_id": row[0],
+                    "teacher_name": row[1],
+                    "date_of_birth": row[2],
+                    "email": row[3],
+                },
+            },
             200,
         )
 
@@ -90,12 +93,12 @@ class TeacherAPI(Resource):
             )
 
         return (
-                {
-                    "message": CREATE_GENERAL_MSG(
-                        action=("added" if db_result is None else "updated"), typeof_object="teacher", id=teacher_id
-                    ), "data": {}
-                }
-            ,
+            {
+                "message": CREATE_GENERAL_MSG(
+                    action=("added" if db_result is None else "updated"), typeof_object="teacher", id=teacher_id
+                ),
+                "data": {},
+            },
             200,
         )
 

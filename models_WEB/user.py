@@ -6,9 +6,10 @@ from flask_restful import Resource, request
 
 from database.login import global_var
 from database.mssql import conn, cursor
+from frontend.helper_web.is_first_user import is_first_user
 from frontend.helper_web.MESSAGE import CREATE_USER_MSG, INVALID_ROLE, INVALID_SESSION, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
-from frontend.helper_web.is_first_user import is_first_user
+
 
 class LoginAPI(Resource):
     def post(self):
@@ -38,9 +39,7 @@ class LoginAPI(Resource):
 class LogoutAPI(Resource):
     def post(self):
         """User logout"""
-        validate_success, message, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["session_key"])
-        )
+        validate_success, message, missing_args = validate_args(request.get_json(silent=True), tuple(["session_key"]))
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args)}, 400
         session_key = message["session_key"]
@@ -113,10 +112,9 @@ class ValidateSessionAPI(Resource):
             return {"message": INVALID_SESSION}, 400
 
         return (
-                {
-                    "message": "Valid session",
-                    "data": {"role": global_var["current_user_role"], "username": global_var["current_user"]},
-                }
-            ,
+            {
+                "message": "Valid session",
+                "data": {"role": global_var["current_user_role"], "username": global_var["current_user"]},
+            },
             200,
         )

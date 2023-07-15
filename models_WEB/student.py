@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 import sys
 from datetime import datetime
-from textwrap import dedent
 
 from flask_restful import Resource, request
 from option import Err, Ok, Result
@@ -29,20 +28,22 @@ class StudentAPI(Resource):
         cursor.execute(f"SELECT * FROM Students WHERE StudentID = {message_body['student_id']}")
         db_result = cursor.fetchone()
         if db_result is None:
-            return {"message": CREATE_GENERAL_MSG(action="not found", typeof_object="student", id=student_id), "data": {}}, 404
+            return {
+                "message": CREATE_GENERAL_MSG(action="not found", typeof_object="student", id=student_id),
+                "data": {},
+            }, 404
 
         return (
-                {
-                    "message": CREATE_GENERAL_MSG(action="found", typeof_object="student", id=student_id),
-                    "data": {
-                        "student_id": db_result[0],
-                        "student_name": db_result[1],
-                        "date_of_birth": db_result[2],
-                        "email": db_result[3],
-                        "phone_number": db_result[4],
-                    },
-                }
-            ,
+            {
+                "message": CREATE_GENERAL_MSG(action="found", typeof_object="student", id=student_id),
+                "data": {
+                    "student_id": db_result[0],
+                    "student_name": db_result[1],
+                    "date_of_birth": db_result[2],
+                    "email": db_result[3],
+                    "phone_number": db_result[4],
+                },
+            },
             200,
         )
 
@@ -80,7 +81,7 @@ class StudentAPI(Resource):
 
         cursor.execute(
             "INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber) VALUES (%s, %s, %s, %s, %s)",
-            (student_id, student_name, date_of_birth, email, phone_number)
+            (student_id, student_name, date_of_birth, email, phone_number),
         )
 
         conn.commit()
@@ -117,7 +118,7 @@ class StudentAPI(Resource):
                     return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err[1]
             cursor.execute(
                 "INSERT INTO Students (StudentID, StudentName, DateOfBirth, Email, PhoneNumber) VALUES (%s, %s, %s, %s, %s)",
-                (student_id, student_name, date_of_birth, email, phone_number)
+                (student_id, student_name, date_of_birth, email, phone_number),
             )
         else:
             # TL;DR: if the value is empty, use the value from the database; else it must pass validation
@@ -138,17 +139,16 @@ class StudentAPI(Resource):
 
             cursor.execute(
                 "UPDATE Students SET StudentName = %s, DateOfBirth = %s, Email = %s, PhoneNumber = %s WHERE StudentID = %s",
-                (student_name, date_of_birth, email, phone_number, student_id)
+                (student_name, date_of_birth, email, phone_number, student_id),
             )
         conn.commit()
         return (
-
-                {
-                    "message": CREATE_GENERAL_MSG(
-                        action=("added" if db_result is None else "updated"), typeof_object="student", id=student_id
-                    ), "data": {}
-                }
-            ,
+            {
+                "message": CREATE_GENERAL_MSG(
+                    action=("added" if db_result is None else "updated"), typeof_object="student", id=student_id
+                ),
+                "data": {},
+            },
             201,
         )
 

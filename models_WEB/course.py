@@ -13,7 +13,7 @@ class CourseAPI(Resource):
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         course_id = message_body["course_id"]
-        if (course_id == ""):
+        if course_id == "":
             return {"message": "Course ID cannot be empty", "data": {}}, 400
 
         cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
@@ -22,16 +22,15 @@ class CourseAPI(Resource):
             return {"message": CREATE_GENERAL_MSG(action="not found", typeof_object="Course", id=course_id), "data": {}}, 404
 
         return (
-                {
-                    "message": "Success",
-                    "data": {
-                        "course_id": db_result[0],
-                        "course_name": db_result[1],
-                        "teacher_id": db_result[2],
-                        "credits": db_result[3],
-                    },
-                }
-            ,
+            {
+                "message": "Success",
+                "data": {
+                    "course_id": db_result[0],
+                    "course_name": db_result[1],
+                    "teacher_id": db_result[2],
+                    "credits": db_result[3],
+                },
+            },
             200,
         )
 
@@ -110,7 +109,7 @@ class CourseAPI(Resource):
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         course_id = message_body["course_id"]
-        if (course_id == ""):
+        if course_id == "":
             return {"message": "Course ID cannot be empty", "data": {}}, 400
 
         cursor.execute(f"SELECT * FROM course WHERE course_id = {course_id}")

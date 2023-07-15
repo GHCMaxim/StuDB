@@ -1,18 +1,18 @@
 // region: add/edit/delete/view student/teacher/course/grade/attendance
 
 const actionMethod = {
-    add: 'POST',
-    edit: 'PUT',
-    delete: 'DELETE',
-    view: 'GET'
+    add: "POST",
+    edit: "PUT",
+    delete: "DELETE",
+    view: "GET",
 };
 
 const dataTypeEntryPoint = {
-    attendance: '/api/attendance',
-    course: '/api/course',
-    grade: '/api/grade',
-    student: '/api/student',
-    teacher: '/api/teacher'
+    attendance: "/api/attendance",
+    course: "/api/course",
+    grade: "/api/grade",
+    student: "/api/student",
+    teacher: "/api/teacher",
 };
 
 const promptInput = {
@@ -135,9 +135,9 @@ const takeAction = (method, dataType) => {
     const options = {
         method: actionMethod[method],
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
     };
 
     fetch(url, options)

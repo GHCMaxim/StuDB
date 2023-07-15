@@ -94,14 +94,14 @@ class GradeAPI(Resource):
             )
         conn.commit()
         return (
-                {
-                    "message": CREATE_GRADE_MSG(
-                        action=("updated" if db_result is not None else "created"),
-                        student_id=student_id,
-                        course_id=course_id,
-                    ), "data": {}
-                }
-            ,
+            {
+                "message": CREATE_GRADE_MSG(
+                    action=("updated" if db_result is not None else "created"),
+                    student_id=student_id,
+                    course_id=course_id,
+                ),
+                "data": {},
+            },
             200,
         )
 

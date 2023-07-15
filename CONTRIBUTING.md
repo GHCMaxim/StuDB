@@ -6,13 +6,13 @@ You should fork the repository by hitting the Fork button on GitHub. This will
 create a copy of the repository on your account that you can do anything with.
 Afterwards, you should clone the repository to your local machine, using:
 
-- If you're using HTTPS:
+-   If you're using HTTPS:
 
 ```shell
 $ git clone https://github.com/<USERNAME>/python-project
 ```
 
-- If you're using SSH:
+-   If you're using SSH:
 
 ```shell
 $ git clone git@github.com:<USERNAME>/python-project
@@ -39,24 +39,24 @@ with the [Conventional Commits](https://www.conventionalcommits.org) format.
 For the best experience in committing code, you should have
 [Node.js](https://nodejs.org) installed on your local machine. Afterwards:
 
-- Install [pnpm](https://pnpm.io). This repository mainly uses `pnpm` (as shown
-  by the `pnpm-lock.yaml` file) but you can use anything. `pnpm` simply gives
-  the sanest defaults and the best performance. If you use anything else (`npm`
-  or `yarn`), please add their respective lockfiles - `package-lock.json` and
-  `yarn.lock` into the `.gitignore` file.
+-   Install [pnpm](https://pnpm.io). This repository mainly uses `pnpm` (as shown
+    by the `pnpm-lock.yaml` file) but you can use anything. `pnpm` simply gives
+    the sanest defaults and the best performance. If you use anything else (`npm`
+    or `yarn`), please add their respective lockfiles - `package-lock.json` and
+    `yarn.lock` into the `.gitignore` file.
 
 ```shell
 $ npm i -g pnpm
 ```
 
-- Install dependencies using `pnpm`:
+-   Install dependencies using `pnpm`:
 
 ```shell
 $ pnpm i
 ```
 
-- Every time you want to commit something, use `pnpm cz` after adding files
-  with `git add`. This will give you an automated prompt to fill in the
-  details of your commit, according to the Conventional Commits format.
+-   Every time you want to commit something, use `pnpm cz` after adding files
+    with `git add`. This will give you an automated prompt to fill in the
+    details of your commit, according to the Conventional Commits format.
 
 If you're using VSCode, I suggest changing `"python.analysis.typeCheckingMode"` in `.vscode/settings.json` to `"basic"` when working with the GUI, `"strict"` otherwise. The GUI relies heavily on `tkinter` and `customtkinter`, which are very weakly typed and have a lot of dynamic attributes. This will cause a lot of false positives in the type checker, and will make it very difficult to work with.
