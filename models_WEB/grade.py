@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from textwrap import dedent
 
-from flask import jsonify
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
@@ -16,7 +15,7 @@ class GradeAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id = message_body["student_id"], message_body["course_id"]
 
         cursor.execute(
@@ -30,18 +29,18 @@ class GradeAPI(Resource):
         db_result = cursor.fetchone()
         if db_result is None:
             return (
-                jsonify({"message": CREATE_GRADE_MSG(action="not found", student_id=student_id, course_id=course_id)}),
+                {"message": CREATE_GRADE_MSG(action="not found", student_id=student_id, course_id=course_id), "data": {}},
                 404,
             )
 
-        return jsonify({"student_id": db_result[0], "course_id": db_result[1], "grade": db_result[2]}), 200
+        return {"student_id": db_result[0], "course_id": db_result[1], "grade": db_result[2], "data": {}}, 200
 
     def post(self):
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id", "grade"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id, grade = message_body["student_id"], message_body["course_id"], message_body["grade"]
 
         cursor.execute(
@@ -53,14 +52,14 @@ class GradeAPI(Resource):
             )
         )
         conn.commit()
-        return jsonify({"message": CREATE_GRADE_MSG(action="created", student_id=student_id, course_id=course_id)}), 201
+        return {"message": CREATE_GRADE_MSG(action="created", student_id=student_id, course_id=course_id), "data": {}}, 201
 
     def put(self):
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id", "grade"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id, grade = message_body["student_id"], message_body["course_id"], message_body["grade"]
 
         cursor.execute(
@@ -93,15 +92,14 @@ class GradeAPI(Resource):
             )
         conn.commit()
         return (
-            jsonify(
                 {
                     "message": CREATE_GRADE_MSG(
                         action=("updated" if db_result is not None else "created"),
                         student_id=student_id,
                         course_id=course_id,
-                    )
+                    ), "data": {}
                 }
-            ),
+            ,
             200,
         )
 
@@ -110,7 +108,7 @@ class GradeAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id = message_body["student_id"], message_body["course_id"]
 
         cursor.execute(
@@ -123,7 +121,7 @@ class GradeAPI(Resource):
         )
         db_result = cursor.fetchone()
         if db_result is None:
-            return jsonify({"message": f"Grade not found for {student_id} in {course_id}"}), 404
+            return {"message": f"Grade not found for {student_id} in {course_id}", "data": {}}, 404
 
         cursor.execute(
             dedent(
@@ -134,4 +132,4 @@ class GradeAPI(Resource):
             )
         )
         conn.commit()
-        return jsonify({"message": f"Deleted {student_id} in {course_id}"}), 200
+        return {"message": f"Deleted {student_id} in {course_id}", "data": {}}, 200

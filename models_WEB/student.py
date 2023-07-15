@@ -5,7 +5,6 @@ import sys
 from datetime import datetime
 from textwrap import dedent
 
-from flask import jsonify
 from flask_restful import Resource, request
 from option import Err, Ok, Result
 
@@ -24,16 +23,15 @@ class StudentAPI(Resource):
         """Get students"""
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["student_id"]))
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id = message_body["student_id"]
 
         cursor.execute(f"SELECT * FROM Students WHERE StudentID = {message_body['student_id']}")
         db_result = cursor.fetchone()
         if db_result is None:
-            return jsonify({"message": CREATE_GENERAL_MSG(action="not found", typeof_object="student", id=student_id)}), 404
+            return {"message": CREATE_GENERAL_MSG(action="not found", typeof_object="student", id=student_id), "data": {}}, 404
 
         return (
-            jsonify(
                 {
                     "message": CREATE_GENERAL_MSG(action="found", typeof_object="student", id=student_id),
                     "data": {
@@ -44,7 +42,7 @@ class StudentAPI(Resource):
                         "phone_number": db_result[4],
                     },
                 }
-            ),
+            ,
             200,
         )
 
@@ -54,7 +52,7 @@ class StudentAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, student_name, date_of_birth, email, phone_number = (
             message_body["student_id"],
             message_body["student_name"],
@@ -66,7 +64,7 @@ class StudentAPI(Resource):
         cursor.execute(f"SELECT StudentID FROM Students WHERE StudentID = {student_id}")
         if cursor.fetchone() is not None:
             return (
-                jsonify({"message": CREATE_GENERAL_MSG(action="already exists", typeof_object="student", id=student_id)}),
+                {"message": CREATE_GENERAL_MSG(action="already exists", typeof_object="student", id=student_id), "data": {}},
                 409,
             )
 
@@ -78,7 +76,7 @@ class StudentAPI(Resource):
             "phone_number": self.validate_phone_number,
         }.items():
             if (res := validator(message_body[variable])).is_err():
-                return jsonify({"message": res.unwrap_err()[0]}), res.unwrap_err()[1]
+                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err[1]
 
         cursor.execute(
             dedent(
@@ -90,7 +88,7 @@ class StudentAPI(Resource):
         )
 
         conn.commit()
-        return jsonify({"message": CREATE_GENERAL_MSG(action="added", typeof_object="student", id=student_id)}), 201
+        return {"message": CREATE_GENERAL_MSG(action="added", typeof_object="student", id=student_id), "data": {}}, 201
 
     def put(self):
         """Update student"""
@@ -98,7 +96,7 @@ class StudentAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, student_name, date_of_birth, email, phone_number = (
             message_body["student_id"],
             message_body["student_name"],
@@ -141,13 +139,13 @@ class StudentAPI(Resource):
             )
         conn.commit()
         return (
-            jsonify(
+
                 {
                     "message": CREATE_GENERAL_MSG(
                         action=("added" if db_result is None else "updated"), typeof_object="student", id=student_id
-                    )
+                    ), "data": {}
                 }
-            ),
+            ,
             201,
         )
 
@@ -155,16 +153,16 @@ class StudentAPI(Resource):
         """Delete student"""
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["student_id"]))
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id = message_body["student_id"]
 
         cursor.execute(f"SELECT StudentID FROM Students WHERE StudentID = {student_id}")
         if cursor.fetchone() is None:
-            return jsonify({"message": "Student not found"}), 404
+            return {"message": "Student not found", "data": {}}, 404
 
         cursor.execute(f"DELETE FROM Students WHERE StudentID = {student_id}")
         conn.commit()
-        return jsonify({"message": CREATE_GENERAL_MSG(action="deleted", typeof_object="student", id=student_id)}), 200
+        return {"message": CREATE_GENERAL_MSG(action="deleted", typeof_object="student", id=student_id), "data": {}}, 200
 
     def validate_student_id(self, student_id: str) -> Result[Self, tuple[str, int]]:
         if student_id == "":

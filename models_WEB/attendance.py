@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 
-from flask import jsonify
 from flask_restful import Resource, request
 from option import Err, Ok, Result
 
@@ -32,7 +31,7 @@ class AttendanceAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id, date = (
             message_body["student_id"],
             message_body["course_id"],
@@ -69,7 +68,7 @@ class AttendanceAPI(Resource):
         cursor.execute(queries[query_key][0], queries[query_key][1])
         db_result = cursor.fetchall()
         if db_result is None:
-            return jsonify({"message": ATTENDANCE_NOT_FOUND}), 404
+            return {"message": ATTENDANCE_NOT_FOUND, "data": {}}, 404
 
         # course
         #   student
@@ -87,7 +86,7 @@ class AttendanceAPI(Resource):
                 results[course_id][student_id] = {}
             results[course_id][student_id][date] = status
 
-        return jsonify({"message": ATTENDANCE_FOUND, "data": results}), 200
+        return {"message": ATTENDANCE_FOUND, "data": results}, 200
 
     def post(self):
         """Create attendance"""
@@ -95,7 +94,7 @@ class AttendanceAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
         student_id, course_id, date, status = (
             message_body["student_id"],
@@ -111,21 +110,21 @@ class AttendanceAPI(Resource):
             "status": self.validate_status,
         }.items():
             if (res := validator(message_body[variable])).is_err:
-                return jsonify({"message": res.unwrap_err()[0]}), res.unwrap_err()[1]
+                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
 
         cursor.execute(
             "SELECT * FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
             (student_id, course_id, date),
         )
         if cursor.fetchone() is not None:
-            return jsonify({"message": ATTENDANCE_EXISTS}), 400
+            return {"message": ATTENDANCE_EXISTS, "data": {}}, 400
 
         cursor.execute(
             "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
             (student_id, course_id, date, status),
         )
         conn.commit()
-        return jsonify({"message": ATTENDANCE_CREATED}), 201
+        return {"message": ATTENDANCE_CREATED, "data": {}}, 201
 
     def put(self):
         """Replace attendance"""
@@ -133,7 +132,7 @@ class AttendanceAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
         student_id, course_id, date, status = (
             message_body["student_id"],
@@ -149,7 +148,7 @@ class AttendanceAPI(Resource):
             "status": self.validate_status,
         }.items():
             if (res := validator(message_body[variable])).is_err:
-                return jsonify({"message": res.unwrap_err()[0]}), res.unwrap_err()[1]
+                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
 
         cursor.execute(
             "SELECT * FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
@@ -162,7 +161,7 @@ class AttendanceAPI(Resource):
                 (student_id, course_id, date, 1),
             )
             conn.commit()
-            return jsonify({"message": ATTENDANCE_CREATED}), 201
+            return {"message": ATTENDANCE_CREATED, "data": {}}, 201
 
         status = 1 - int(db_result[3])
         cursor.execute(
@@ -170,7 +169,7 @@ class AttendanceAPI(Resource):
             (status, student_id, course_id, date),
         )
         conn.commit()
-        return jsonify({"message": ATTENDANCE_UPDATED_MSG(str(1 - status), str(status))}), 200
+        return {"message": ATTENDANCE_UPDATED_MSG(str(1 - status), str(status)), "data": {}}, 200
 
     def delete(self):
         """Delete attendance"""
@@ -178,7 +177,7 @@ class AttendanceAPI(Resource):
             request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
         )
         if not validate_success:
-            return jsonify({"message": MISSING_ARGS_MSG(missing_args)}), 400
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
         student_id, course_id, date = (message_body["student_id"], message_body["course_id"], message_body["date"])
 
@@ -188,21 +187,21 @@ class AttendanceAPI(Resource):
             "date": self.validate_date,
         }.items():
             if (res := validator(message_body[variable])).is_err:
-                return jsonify({"message": res.unwrap_err()[0]}), res.unwrap_err()[1]
+                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
 
         cursor.execute(
             "SELECT * FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
             (student_id, course_id, date),
         )
         if cursor.fetchone() is None:
-            return jsonify({"message": ATTENDANCE_NOT_FOUND}), 404
+            return {"message": ATTENDANCE_NOT_FOUND, "data": {}}, 404
 
         cursor.execute(
             "DELETE FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
             (student_id, course_id, date),
         )
         conn.commit()
-        return jsonify({"message": ATTENDANCE_CREATED}), 200
+        return {"message": ATTENDANCE_CREATED, "data": {}}, 200
 
     def validate_student_id(self, id: str) -> Result[Self, tuple[str, int]]:
         if id == "":
