@@ -32,6 +32,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/")
+def root():
+    return render_template("index.html")
+
+
 @app.route("/grade")
 def grade():
     return render_template("grade.html")
