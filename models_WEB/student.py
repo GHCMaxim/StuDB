@@ -174,10 +174,6 @@ class StudentAPI(Resource):
             return Err(("Student ID can only contain numbers", 400))
         if len(student_id) < 8:
             return Err(("Student ID must have at least 8 characters", 400))
-        cursor.execute(f"SELECT StudentID FROM Students WHERE StudentID = {student_id}")
-        if cursor.fetchone() is not None:
-            return Err((CREATE_GENERAL_MSG(action="already exists", typeof_object="student", id=student_id), 400))
-        self.StudentID = int(student_id)
         return Ok(self)
 
     def validate_student_name(self, name: str) -> Result[Self, tuple[str, int]]:
