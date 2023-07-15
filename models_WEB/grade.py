@@ -17,6 +17,8 @@ class GradeAPI(Resource):
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id = message_body["student_id"], message_body["course_id"]
+        if (student_id == "") or (course_id == ""):
+            return {"message": "student_id and course_id cannot be empty", "data": {}}, 400
 
         cursor.execute(
             dedent(
