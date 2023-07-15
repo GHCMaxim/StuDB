@@ -1,4 +1,1 @@
-global_var: dict[str, str] = {
-    "current_user": "",
-    "current_user_role": "",
-}
+global_var: dict[str, str] = {"current_user": "", "current_user_role": "", "session_key": ""}
