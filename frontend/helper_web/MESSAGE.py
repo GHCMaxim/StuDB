@@ -8,6 +8,10 @@ ATTENDANCE_EXISTS = "Attendance already exists."
 ATTENDANCE_CREATED = "Attendance created."
 
 
+INVALID_SESSION = "Invalid session."
+INVALID_ROLE = "You don't have permission to do that."
+
+
 def CREATE_USER_MSG(action: str, username: str) -> str:
     return f"User with username '{username}' {action.lower()}."
 
