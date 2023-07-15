@@ -79,7 +79,8 @@ class TeacherAPI(Resource):
             cursor.execute(f"INSERT INTO teacher VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth}', '{email}')")
         else:
             cursor.execute(
-                f"UPDATE teacher SET TeacherName = '{teacher_name}', DateOfBirth = '{date_of_birth}', Email = '{email}' WHERE TeacherID = '{teacher_id}'"
+                "UPDATE teacher SET TeacherName = %s, DateOfBirth = %s, Email = %s WHERE TeacherID = %s",
+                (teacher_name, date_of_birth, email, teacher_id),
             )
 
         return (
