@@ -48,6 +48,8 @@ class CourseAPI(Resource):
             message_body["teacher_id"],
             message_body["credits"],
         )
+        if (course_id == "") or (course_name == "") or (teacher_id == "") or (credits == ""):
+            return {"message": "Course ID, Course Name, Teacher ID, Credits cannot be empty", "data": {}}, 400
 
         cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
         db_result = cursor.fetchone()
@@ -78,20 +80,27 @@ class CourseAPI(Resource):
             message_body["teacher_id"],
             message_body["credits"],
         )
+        if (course_id == "") and (course_name == "") and (teacher_id == "") and (credits == ""):
+            return {"message": "Course unchanged", "data": {}}, 200
 
         cursor.execute("SELECT * FROM course WHERE course_id = %s", course_id)
         db_result = cursor.fetchone()
         if db_result is None:
+            if (course_name == "") or (teacher_id == "") or (credits == ""):
+                return {"message": "Course Name, Teacher ID, Credits cannot be empty", "data": {}}, 400
             cursor.execute(
-                "INSERT INTO course VALUES (%s, %s, %s)",
-                (course_id, course_name, teacher_id),
+                "INSERT INTO course VALUES (%s, %s, %s, %s)",
+                (course_id, course_name, teacher_id, credits),
             )
             conn.commit()
             return {"message": CREATE_GENERAL_MSG(action="created", typeof_object="Course", id=course_id), "data": {}}, 201
         else:
+            course_name = db_result[1] if course_name == "" else course_name
+            teacher_id = db_result[2] if teacher_id == "" else teacher_id
+            credits = db_result[3] if credits == "" else credits
             cursor.execute(
-                "UPDATE course SET course_name = %s, teacher_id = %s WHERE course_id = %s",
-                (course_name, teacher_id, course_id),
+                "UPDATE course SET course_name = %s, teacher_id = %s, credits = %s WHERE course_id = %s",
+                (course_name, teacher_id, credits, course_id),
             )
             conn.commit()
             return {"message": CREATE_GENERAL_MSG(action="updated", typeof_object="Course", id=course_id), "data": {}}, 200
@@ -101,6 +110,8 @@ class CourseAPI(Resource):
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         course_id = message_body["course_id"]
+        if (course_id == ""):
+            return {"message": "Course ID cannot be empty", "data": {}}, 400
 
         cursor.execute(f"SELECT * FROM course WHERE course_id = {course_id}")
         db_result = cursor.fetchone()
