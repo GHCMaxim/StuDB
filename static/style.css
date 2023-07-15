@@ -6,141 +6,135 @@ body {
     padding-top: 3rem;
     padding-bottom: 3rem;
     color: #1b4965;
-    font-family: 'Open Sans';
-  }
-  
-  
-  /* CUSTOMIZE THE CAROUSEL
+    font-family: "Open Sans";
+}
+
+/* CUSTOMIZE THE CAROUSEL
   -------------------------------------------------- */
-  
-  /* Carousel base class */
-  .carousel, .hero {
+
+/* Carousel base class */
+.carousel,
+.hero {
     margin-bottom: 4rem;
-  }
-  /* Since positioning the image, we need to help out the caption */
-  .carousel-caption {
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
     bottom: 3rem;
     z-index: 10;
-  }
-  
-  /* Declare heights because of positioning of img element */
-  .carousel-item {
+}
+
+/* Declare heights because of positioning of img element */
+.carousel-item {
     height: 32rem;
-  }
-  .carousel-item > img {
+}
+.carousel-item > img {
     position: absolute;
     top: 0;
     left: 0;
     min-width: 100%;
     height: 32rem;
-  }
-  
-  
-  /* MARKETING CONTENT
+}
+
+/* MARKETING CONTENT
   -------------------------------------------------- */
-  
-  /* Center align the text within the three columns below the carousel */
-  .marketing .col-lg-4 {
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
     margin-bottom: 1.5rem;
     text-align: center;
-  }
-  .marketing h2 {
+}
+.marketing h2 {
     font-weight: 400;
-  }
-  .marketing .col-lg-4 p {
-    margin-right: .75rem;
-    margin-left: .75rem;
-  }
-  
-  
-  /* Featurettes
+}
+.marketing .col-lg-4 p {
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
+}
+
+/* Featurettes
   ------------------------- */
-  
-  .featurette-divider {
+
+.featurette-divider {
     margin: 5rem 0; /* Space out the Bootstrap <hr> more */
-  }
-  
-  /* Thin out the marketing headings */
-  .featurette-heading {
+}
+
+/* Thin out the marketing headings */
+.featurette-heading {
     font-weight: 300;
     line-height: 1;
-    letter-spacing: -.05rem;
-  }
-  
-  
-  /* RESPONSIVE CSS
+    letter-spacing: -0.05rem;
+}
+
+/* RESPONSIVE CSS
   -------------------------------------------------- */
-  
-  @media (min-width: 40em) {
+
+@media (min-width: 40em) {
     /* Bump up size of carousel content */
     .carousel-caption p {
-      margin-bottom: 1.25rem;
-      font-size: 1.25rem;
-      line-height: 1.4;
+        margin-bottom: 1.25rem;
+        font-size: 1.25rem;
+        line-height: 1.4;
     }
-  
-    .featurette-heading {
-      font-size: 50px;
-    }
-  }
-  
-  @media (min-width: 62em) {
-    .featurette-heading {
-      margin-top: 7rem;
-    }
-  }
 
-  .hero {
+    .featurette-heading {
+        font-size: 50px;
+    }
+}
+
+@media (min-width: 62em) {
+    .featurette-heading {
+        margin-top: 7rem;
+    }
+}
+
+.hero {
     background: url("https://images.pexels.com/photos/8355730/pexels-photo-8355730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: top left;
     background-size: cover;
     height: 100vh;
-  }
+}
 
-  .lead {
+.lead {
     font-size: 2em;
-  }
+}
 
-  nav.navbar {
+nav.navbar {
     background-color: #ffffff;
-  }
-  .home{
+}
+.home {
     background-color: #cae9ff;
-  }
-  .card-body {
+}
+.card-body {
     background-color: #a2d2ff;
 }
 .hero2 {
-  background: url("https://images.pexels.com/photos/929773/pexels-photo-929773.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-position: bottom left;
-  background-size: cover;
-  height: 100vh;
+    background: url("https://images.pexels.com/photos/929773/pexels-photo-929773.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-position: bottom left;
+    background-size: cover;
+    height: 100vh;
 }
 .hero3 {
-  background: url("https://images.pexels.com/photos/735273/pexels-photo-735273.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-position:top center;
-  background-size: cover;
-  height: 100vh;
+    background: url("https://images.pexels.com/photos/735273/pexels-photo-735273.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-position: top center;
+    background-size: cover;
+    height: 100vh;
 }
 .hero4 {
-  background: url("https://images.pexels.com/photos/14860387/pexels-photo-14860387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-position:top center;
-  background-size: cover;
-  height: 100vh;
+    background: url("https://images.pexels.com/photos/14860387/pexels-photo-14860387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-position: top center;
+    background-size: cover;
+    height: 100vh;
 }
 
 .hero5 {
-  background: url("https://images.pexels.com/photos/14117817/pexels-photo-14117817.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-position:top center;
-  background-size: cover;
-  height: 100vh;
+    background: url("https://images.pexels.com/photos/14117817/pexels-photo-14117817.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-position: top center;
+    background-size: cover;
+    height: 100vh;
 }
 .hero6 {
-  background: url("https://images.pexels.com/photos/4516067/pexels-photo-4516067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
-  background-position:bottom center;
-  background-size: cover;
-  height: 100vh;
+    background: url("https://images.pexels.com/photos/4516067/pexels-photo-4516067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-position: bottom center;
+    background-size: cover;
+    height: 100vh;
 }
-
-
-  
