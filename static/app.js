@@ -1,3 +1,5 @@
+// region: add/edit/delete/view student/teacher/course/grade/attendance
+
 const actionMethod = {
     add: 'POST',
     edit: 'PUT',
@@ -16,108 +18,108 @@ const dataTypeEntryPoint = {
 const promptInput = {
     attendance: {
         add: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            attendance: 'Enter attendance (1 or 0)',
-            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            date: "Enter date (YYYY-MM-DD, leave blank for today)",
+            status: "Enter attendance status (1 or 0)",
         },
         edit: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            date: 'Enter date (YYYY-MM-DD, leave blank for today)',
-            attendance: 'Enter attendance (1, 0 or leave blank to not change)'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            date: "Enter date (YYYY-MM-DD, leave blank for today)",
+            status: "Enter attendance status (1, 0 or leave blank to not change)",
         },
         delete: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            date: "Enter date (YYYY-MM-DD, leave blank for today)",
         },
         view: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            date: 'Enter date (YYYY-MM-DD, leave blank for today)'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            date: "Enter date (YYYY-MM-DD, leave blank for today)",
         },
     },
     course: {
         add: {
-            course_id: 'Enter course ID',
-            course_name: 'Enter course name',
-            course_description: 'Enter course description',
-            course_credit: 'Enter course credit'
+            course_id: "Enter course ID",
+            course_name: "Enter course name",
+            teacher_id: "Enter teacher ID",
+            credits: "Enter course credit",
         },
         edit: {
-            course_id: 'Enter the course ID to edit',
-            course_name: 'Enter new course name',
-            course_description: 'Enter new course description',
-            course_credit: 'Enter new course credit'
+            course_id: "Enter the course ID to edit",
+            course_name: "Enter new course name",
+            teacher_id: "Enter new teacher ID",
+            credits: "Enter new course credit",
         },
         delete: {
-            course_id: 'Enter the course ID to delete'
+            course_id: "Enter the course ID to delete",
         },
         view: {
-            course_id: 'Enter the course ID to view'
+            course_id: "Enter the course ID to view",
         },
     },
     grade: {
         add: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            grade: 'Enter grade',
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            grade: "Enter grade",
         },
         edit: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID',
-            grade: 'Enter new grade'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            grade: "Enter new grade",
         },
         delete: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
         },
         view: {
-            student_id: 'Enter student ID',
-            course_id: 'Enter course ID'
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
         },
     },
     student: {
         add: {
-            student_name: 'Enter student name',
-            student_id: 'Enter student ID',
-            date_of_birth: 'Enter student DOB',
-            email: 'Enter student email',
-            phone_number: 'Enter student phone number'
+            student_id: "Enter student ID",
+            student_name: "Enter student name",
+            date_of_birth: "Enter student DOB",
+            email: "Enter student email",
+            phone_number: "Enter student phone number",
         },
         edit: {
-            student_id: 'Enter the student ID to edit',
-            student_name: 'Enter new student name',
-            date_of_birth: 'Enter new DOB',
-            email: 'Enter new email',
-            phone_number: 'Enter new phone number'
+            student_id: "Enter the student ID to edit",
+            student_name: "Enter new student name",
+            date_of_birth: "Enter new DOB",
+            email: "Enter new email",
+            phone_number: "Enter new phone number",
         },
         delete: {
-            student_id: 'Enter the student ID to delete'
+            student_id: "Enter the student ID to delete",
         },
         view: {
-            student_id: 'Enter the student ID to view'
+            student_id: "Enter the student ID to view",
         },
     },
     teacher: {
         add: {
-            teacher_name: 'Enter teacher name',
-            teacher_id: 'Enter teacher ID',
-            date_of_birth: 'Enter teacher DOB',
-            email: 'Enter teacher email',
+            teacher_name: "Enter teacher name",
+            teacher_id: "Enter teacher ID",
+            date_of_birth: "Enter teacher DOB",
+            email: "Enter teacher email",
         },
         edit: {
-            teacher_id: 'Enter the teacher ID to edit',
-            teacher_name: 'Enter new teacher name',
-            date_of_birth: 'Enter new DOB',
-            email: 'Enter new email',
+            teacher_id: "Enter the teacher ID to edit",
+            teacher_name: "Enter new teacher name",
+            date_of_birth: "Enter new DOB",
+            email: "Enter new email",
         },
         delete: {
-            teacher_id: 'Enter the teacher ID to delete'
+            teacher_id: "Enter the teacher ID to delete",
         },
         view: {
-            teacher_id: 'Enter the teacher ID to view'
+            teacher_id: "Enter the teacher ID to view",
         },
     },
 };
