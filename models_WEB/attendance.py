@@ -138,7 +138,7 @@ class AttendanceAPI(Resource):
 
         cursor.execute(queries[query_key][0], queries[query_key][1])
         db_result = cursor.fetchall()
-        if db_result is None:
+        if len(db_result) == 0:
             return {"message": ATTENDANCE_NOT_FOUND, "data": {}}, 404
 
         # course
@@ -150,8 +150,13 @@ class AttendanceAPI(Resource):
 
         results = {}
         for result in db_result:
-            student_id, course_id, date, status = result
-            date = date.strftime("%Y-%m-%d")
+            print(result)
+            student_id, course_id, date, status = (
+                result[0],
+                result[1],
+                result[2].strftime("%Y-%m-%d"),
+                result[3],
+            )
             if course_id not in results:
                 results[course_id] = {}
             if student_id not in results[course_id]:
