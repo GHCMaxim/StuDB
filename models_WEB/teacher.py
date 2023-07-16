@@ -1,14 +1,32 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
-from frontend.helper_web.MESSAGE import CREATE_GENERAL_MSG, MISSING_ARGS_MSG
+from frontend.helper_web.MESSAGE import ACTION_MUST_BE_CRUD, CREATE_GENERAL_MSG, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
 
 
 class TeacherAPI(Resource):
-    def get(self):
+    def post(self):
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["action"]))
+        if not validate_success:
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
+        match message_body["action"].lower():
+            case "create":
+                return self.CREATE()
+            case "read":
+                return self.READ()
+            case "update":
+                return self.UPDATE()
+            case "delete":
+                return self.DELETE()
+            case _:
+                return {"message": ACTION_MUST_BE_CRUD, "data": {}}, 400
+
+    def READ(self):
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["teacher_id"]))
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
@@ -16,7 +34,7 @@ class TeacherAPI(Resource):
         if teacher_id == "":
             return {"message": "teacher_id cannot be empty", "data": {}}, 400
 
-        cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
+        cursor.execute(f"SELECT * FROM Teachers WHERE TeacherID = '{teacher_id}'")
         row = cursor.fetchone()
         if row is None:
             return {
@@ -30,29 +48,29 @@ class TeacherAPI(Resource):
                 "data": {
                     "teacher_id": row[0],
                     "teacher_name": row[1],
-                    "date_of_birth": row[2],
+                    "date_of_birth": datetime.strftime(row[2], "%Y-%m-%d"),
                     "email": row[3],
                 },
             },
             200,
         )
 
-    def post(self):
+    def CREATE(self):
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["teacher_id", "teacher_name", "date_of_birth", "email"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        teacher_id, teacher_name, date_of_birth, email = (
+        teacher_id, teacher_name, date_of_birth_str, email = (
             message_body["teacher_id"],
             message_body["teacher_name"],
             message_body["date_of_birth"],
             message_body["email"],
         )
-        if (teacher_id == "") or (teacher_name == "") or (date_of_birth == "") or (email == ""):
+        if (teacher_id == "") or (teacher_name == "") or (date_of_birth_str == "") or (email == ""):
             return {"message": "all fields cannot be empty", "data": {}}, 400
 
-        cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
+        cursor.execute(f"SELECT * FROM Teachers WHERE TeacherID = '{teacher_id}'")
         db_result = cursor.fetchone()
         if db_result is not None:
             return (
@@ -60,12 +78,20 @@ class TeacherAPI(Resource):
                 409,
             )
 
-        cursor.execute(f"INSERT INTO teacher VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth}', '{email}')")
+        cursor.execute(f"INSERT INTO Teachers VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth_str}', '{email}')")
         conn.commit()
 
-        return {"message": CREATE_GENERAL_MSG(action="added", typeof_object="teacher", id=teacher_id), "data": {}}, 201
+        return {
+            "message": CREATE_GENERAL_MSG(action="added", typeof_object="teacher", id=teacher_id),
+            "data": {
+                "teacher_id": teacher_id,
+                "teacher_name": teacher_name,
+                "date_of_birth": date_of_birth_str,
+                "email": email,
+            },
+        }, 201
 
-    def put(self):
+    def UPDATE(self):
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["teacher_id", "teacher_name", "date_of_birth", "email"])
         )
@@ -80,15 +106,15 @@ class TeacherAPI(Resource):
         if teacher_id == "":
             return {"message": "teacher_id cannot be empty", "data": {}}, 400
 
-        cursor.execute(f"SELECT * FROM teacher WHERE TeacherID = '{teacher_id}'")
+        cursor.execute(f"SELECT * FROM Teachers WHERE TeacherID = '{teacher_id}'")
         db_result = cursor.fetchone()
         if db_result is None:
             if (teacher_name == "") or (date_of_birth == "") or (email == ""):
                 return {"message": "all fields cannot be empty", "data": {}}, 400
-            cursor.execute(f"INSERT INTO teacher VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth}', '{email}')")
+            cursor.execute(f"INSERT INTO Teachers VALUES ('{teacher_id}', '{teacher_name}', '{date_of_birth}', '{email}')")
         else:
             cursor.execute(
-                "UPDATE teacher SET TeacherName = %s, DateOfBirth = %s, Email = %s WHERE TeacherID = %s",
+                "UPDATE Teachers SET TeacherName = %s, DateOfBirth = %s, Email = %s WHERE TeacherID = %s",
                 (teacher_name, date_of_birth, email, teacher_id),
             )
 
@@ -97,18 +123,23 @@ class TeacherAPI(Resource):
                 "message": CREATE_GENERAL_MSG(
                     action=("added" if db_result is None else "updated"), typeof_object="teacher", id=teacher_id
                 ),
-                "data": {},
+                "data": {
+                    "teacher_id": teacher_id,
+                    "teacher_name": teacher_name,
+                    "date_of_birth": date_of_birth,
+                    "email": email,
+                },
             },
             200,
         )
 
-    def delete(self):
+    def DELETE(self):
         validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["teacher_id"]))
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         teacher_id = message_body["teacher_id"]
 
-        cursor.execute(f"DELETE FROM teacher WHERE TeacherID = '{teacher_id}'")
+        cursor.execute(f"DELETE FROM Teachers WHERE TeacherID = '{teacher_id}'")
         conn.commit()
 
         return {"message": CREATE_GENERAL_MSG(action="deleted", typeof_object="teacher", id=teacher_id), "data": {}}, 200

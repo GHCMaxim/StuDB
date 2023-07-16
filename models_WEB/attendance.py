@@ -8,7 +8,9 @@ from option import Err, Ok, Result
 
 from database.mssql import conn, cursor
 from frontend.helper_web.MESSAGE import (
+    ACTION_MUST_BE_CRUD,
     ATTENDANCE_CREATED,
+    ATTENDANCE_DELETED,
     ATTENDANCE_EXISTS,
     ATTENDANCE_FOUND,
     ATTENDANCE_NOT_FOUND,
@@ -25,7 +27,76 @@ else:
 
 
 class AttendanceAPI(Resource):
-    def get(self):
+    def post(self):
+        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["action"]))
+        if not validate_success:
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
+        match message_body["action"].lower():
+            case "create":
+                return self.CREATE()
+            case "read":
+                return self.READ()
+            case "update":
+                return self.UPDATE()
+            case "delete":
+                return self.DELETE()
+            case _:
+                return {"message": ACTION_MUST_BE_CRUD, "data": {}}, 400
+
+    def CREATE(self):
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
+        )
+        if not validate_success:
+            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
+
+        student_id, course_id, date, status = (
+            message_body["student_id"],
+            message_body["course_id"],
+            message_body["date"],
+            message_body["status"],
+        )
+
+        for variable, validator in {
+            "student_id": self.validate_student_id,
+            "course_id": self.validate_course_id,
+            "date": self.validate_date,
+            "status": self.validate_status,
+        }.items():
+            if (res := validator(message_body[variable])).is_err:
+                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
+
+        cursor.execute(
+            "SELECT * FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
+            (student_id, course_id, date),
+        )
+        if cursor.fetchone() is not None:
+            return {
+                "message": ATTENDANCE_EXISTS,
+                "data": {
+                    "student_id": student_id,
+                    "course_id": course_id,
+                    "date": date,
+                    "status": status,
+                },
+            }, 400
+
+        cursor.execute(
+            "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
+            (student_id, course_id, date, status),
+        )
+        conn.commit()
+        return {
+            "message": ATTENDANCE_CREATED,
+            "data": {
+                "student_id": student_id,
+                "course_id": course_id,
+                "date": date,
+                "status": status,
+            },
+        }, 201
+
+    def READ(self):
         """Get attendance"""
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
@@ -80,6 +151,7 @@ class AttendanceAPI(Resource):
         results = {}
         for result in db_result:
             student_id, course_id, date, status = result
+            date = date.strftime("%Y-%m-%d")
             if course_id not in results:
                 results[course_id] = {}
             if student_id not in results[course_id]:
@@ -88,45 +160,7 @@ class AttendanceAPI(Resource):
 
         return {"message": ATTENDANCE_FOUND, "data": results}, 200
 
-    def post(self):
-        """Create attendance"""
-        validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
-        )
-        if not validate_success:
-            return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-
-        student_id, course_id, date, status = (
-            message_body["student_id"],
-            message_body["course_id"],
-            message_body["date"],
-            message_body["status"],
-        )
-
-        for variable, validator in {
-            "student_id": self.validate_student_id,
-            "course_id": self.validate_course_id,
-            "date": self.validate_date,
-            "status": self.validate_status,
-        }.items():
-            if (res := validator(message_body[variable])).is_err:
-                return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
-
-        cursor.execute(
-            "SELECT * FROM Attendance WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
-            (student_id, course_id, date),
-        )
-        if cursor.fetchone() is not None:
-            return {"message": ATTENDANCE_EXISTS, "data": {}}, 400
-
-        cursor.execute(
-            "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
-            (student_id, course_id, date, status),
-        )
-        conn.commit()
-        return {"message": ATTENDANCE_CREATED, "data": {}}, 201
-
-    def put(self):
+    def UPDATE(self):
         """Replace attendance"""
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
@@ -160,18 +194,24 @@ class AttendanceAPI(Resource):
                 "INSERT INTO Attendance (StudentID, CourseID, AttendanceDate, AttendanceStatus) VALUES (%s, %s, %s, %s)",
                 (student_id, course_id, date, 1),
             )
-            conn.commit()
-            return {"message": ATTENDANCE_CREATED, "data": {}}, 201
-
-        status = 1 - int(db_result[3])
-        cursor.execute(
-            "UPDATE Attendance SET AttendanceStatus = %s WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
-            (status, student_id, course_id, date),
-        )
+        else:
+            status = 1 - int(db_result[3])
+            cursor.execute(
+                "UPDATE Attendance SET AttendanceStatus = %s WHERE StudentID = %s AND CourseID = %s AND AttendanceDate = %s",
+                (status, student_id, course_id, date),
+            )
         conn.commit()
-        return {"message": ATTENDANCE_UPDATED_MSG(str(1 - status), str(status)), "data": {}}, 200
+        return {
+            "message": ATTENDANCE_CREATED if db_result is None else ATTENDANCE_UPDATED_MSG(str(1 - status), str(status)),
+            "data": {
+                "student_id": student_id,
+                "course_id": course_id,
+                "date": date,
+                "status": status,
+            },
+        }, 201
 
-    def delete(self):
+    def DELETE(self):
         """Delete attendance"""
         validate_success, message_body, missing_args = validate_args(
             request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
@@ -201,7 +241,7 @@ class AttendanceAPI(Resource):
             (student_id, course_id, date),
         )
         conn.commit()
-        return {"message": ATTENDANCE_CREATED, "data": {}}, 200
+        return {"message": ATTENDANCE_DELETED, "data": {}}, 200
 
     def validate_student_id(self, id: str) -> Result[Self, tuple[str, int]]:
         if id == "":
