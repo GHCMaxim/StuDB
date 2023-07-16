@@ -37,7 +37,11 @@ Please fill out the `.env` file using `.env_example` as a base.
 Afterwards, run:
 
 ```
-$ pipenv run python main.py
+$ pipenv run python main_tui.py
+```
+
+```
+pnpm start
 ```
 
 to start the program.
