@@ -39,9 +39,10 @@ Afterwards, run:
 ```
 $ pipenv run python main_tui.py
 ```
+or
 
 ```
-pnpm start
+$ pnpm start
 ```
 
 to start the program.
