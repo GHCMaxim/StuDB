@@ -187,8 +187,8 @@ const handler = {
             }),
         });
         const res = await response.json();
-        localStorage.setItem("session_key", res.data.session_key);
         alert(res.message);
+        sessionStorage.setItem("session_key", res.data.session_key);
         window.location.reload();
     },
     register: async () => {
@@ -210,7 +210,7 @@ const handler = {
             if (role === null) return;
             if (role === "") role = "Student";
         }
-        const session_key = localStorage.getItem("session_key");
+        const session_key = sessionStorage.getItem("session_key");
 
         response = await fetch("/api/user/register", {
             method: "POST",
@@ -229,7 +229,7 @@ const handler = {
         window.location.reload();
     },
     logout: async () => {
-        const session_key = localStorage.getItem("session_key");
+        const session_key = sessionStorage.getItem("session_key");
         response = await fetch("/api/user/logout", {
             method: "POST",
             headers: {
@@ -240,8 +240,8 @@ const handler = {
             }),
         });
         const res = await response.json();
-        localStorage.removeItem("session_key");
         alert(res.message);
+        sessionStorage.removeItem("session_key");
         window.location.reload();
     },
 };
@@ -276,7 +276,7 @@ const helper = {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                session_key: localStorage.getItem("session_key"),
+                session_key: sessionStorage.getItem("session_key"),
             }),
         });
         const res = await response.json();
@@ -295,10 +295,13 @@ const helper = {
 
 // Login/logout/signup button on index page
 document.addEventListener("DOMContentLoaded", async () => {
+    if (sessionStorage.getItem("session_key") === null)
+        sessionStorage.setItem("session_key", "");
+
     const element = document.querySelector(".login-welcome-signup");
     if (!element) return; // make sure the below code is only executed on the index page
 
-    if (!localStorage.getItem("session_key")) {
+    if (!sessionStorage.getItem("session_key")) {
         element.appendChild(createLoginOutRegBtn("login"));
         if (await helper.isFirstUser())
             element.appendChild(createLoginOutRegBtn("register"));
