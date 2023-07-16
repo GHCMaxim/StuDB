@@ -5,7 +5,7 @@ A simple database system project using PyMSSQL.
 ## Requirements
 
 -   Python 3.10+
--   Dependencies: `python-pipenv`, `typing_extensions`, `option`, `pymssql`
+-   Dependencies: `python-pipenv`, `typing_extensions`, `option`, `pymssql`, `flask`, `flask-restful`
 -   MSSQL
 
 ## Usage
