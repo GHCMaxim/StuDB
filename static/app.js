@@ -144,10 +144,13 @@ const createYamlPopup = async (yaml_data) => {
 
 const takeAction = async (method, dataType) => {
     const url = dataTypeEntryPoint[dataType];
-    const prompt = promptInput[dataType][method];
-    const data = { action: method };
-    for (const key in prompt) {
-        data[key] = window.prompt(prompt[key]);
+    const get_user_data = promptInput[dataType][method];
+    const data = {
+        action: method,
+        session_key: sessionStorage.getItem("session_key"),
+    };
+    for (const key in get_user_data) {
+        data[key] = prompt(get_user_data[key]);
         if (data[key] === null) return;
     }
     response = await fetch(url, {
