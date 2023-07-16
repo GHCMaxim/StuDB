@@ -27,4 +27,5 @@ main(role='main')
                 input#password(type='password' required='')
                 label Password
             button.button(type='submit' onclick='handleLogin()') Login
-    script(src="{{url_for('static', filename='app.js')}}")
+script(src='https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js' integrity='sha256-Rdw90D3AegZwWiwpibjH9wkBPwS9U4bjJ51ORH8H69c' crossorigin='anonymous')
+script(src="{{url_for('static', filename='app.js')}}")
