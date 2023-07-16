@@ -1,12 +1,17 @@
+:root {
+    --navbar-height: 56px;
+}
+
 /* GLOBAL STYLES
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */
 
 body {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    /* padding-top: 3rem; */
+    /* padding-bottom: 3rem; */
     color: #1b4965;
     font-family: "Open Sans";
+    margin: 0;
 }
 
 /* CUSTOMIZE THE CAROUSEL
@@ -17,6 +22,7 @@ body {
 .hero {
     margin-bottom: 4rem;
 }
+
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
     bottom: 3rem;
@@ -27,6 +33,7 @@ body {
 .carousel-item {
     height: 32rem;
 }
+
 .carousel-item > img {
     position: absolute;
     top: 0;
@@ -43,9 +50,11 @@ body {
     margin-bottom: 1.5rem;
     text-align: center;
 }
+
 .marketing h2 {
     font-weight: 400;
 }
+
 .marketing .col-lg-4 p {
     margin-right: 0.75rem;
     margin-left: 0.75rem;
@@ -55,7 +64,8 @@ body {
   ------------------------- */
 
 .featurette-divider {
-    margin: 5rem 0; /* Space out the Bootstrap <hr> more */
+    margin: 5rem 0;
+    /* Space out the Bootstrap <hr> more */
 }
 
 /* Thin out the marketing headings */
@@ -91,50 +101,120 @@ body {
     background: url("https://images.pexels.com/photos/8355730/pexels-photo-8355730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: top left;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .lead {
     font-size: 2em;
 }
 
+.navbar {
+    position: sticky;
+    top: 0;
+}
+
+.container-fluid {
+    min-height: calc(100vh - var(--navbar-height));
+}
+
 nav.navbar {
     background-color: #ffffff;
 }
+
 .home {
     background-color: #cae9ff;
 }
+
 .card-body {
     background-color: #a2d2ff;
 }
+
 .hero2 {
     background: url("https://images.pexels.com/photos/929773/pexels-photo-929773.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: bottom left;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
 }
+
 .hero3 {
     background: url("https://images.pexels.com/photos/735273/pexels-photo-735273.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: top center;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
 }
+
 .hero4 {
     background: url("https://images.pexels.com/photos/14860387/pexels-photo-14860387.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: top center;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .hero5 {
     background: url("https://images.pexels.com/photos/14117817/pexels-photo-14117817.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: top center;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
 }
+
 .hero6 {
     background: url("https://images.pexels.com/photos/4516067/pexels-photo-4516067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
     background-position: bottom center;
     background-size: cover;
-    height: 100vh;
+    /* height: 100vh; */
+}
+
+@media (min-width: 576px) {
+    .col-sm-6 {
+        max-width: 100%;
+    }
+}
+
+.home .row .last {
+    flex: 1;
+}
+
+.home {
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.popup-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
+    backdrop-filter: blur(10px);
+    padding: 3rem 0;
+}
+
+.popup-container .popup-content {
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    overflow-y: auto;
+    font-size: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem 2rem;
+    border-radius: 0.5rem;
+}
+
+button {
+    backdrop-filter: blur(10px);
+}
+
+.login-welcome-signup button {
+    margin: 0 8px;
 }
