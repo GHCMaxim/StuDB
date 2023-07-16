@@ -1,0 +1,10 @@
+.container-fluid.hero6.d-flex.align-items-center.justify-content-center
+    .text-center
+        h1.display-4.mb-0.text-primary-emphasis ABOUT __TABLE_TYPE__
+        h2.display-5.mt-0.text-primary-emphasis Please select an action below
+        .action-buttons
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('create', '__table_type__')") Add __Table_type__
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('read', '__table_type__')") View __Table_type__
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('update', '__table_type__')") Edit __Table_type__
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('delete', '__table_type__')") Delete __Table_type__
+            button.btn.btn-outline-danger.btn-lg(onclick='goBack()') Back
