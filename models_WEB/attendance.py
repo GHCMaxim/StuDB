@@ -7,6 +7,7 @@ from flask_restful import Resource, request
 from option import Err, Ok, Result
 
 from database.mssql import conn, cursor
+from frontend.helper_web.have_permission import have_permission
 from frontend.helper_web.MESSAGE import (
     ACTION_MUST_BE_CRUD,
     ATTENDANCE_CREATED,
@@ -16,6 +17,7 @@ from frontend.helper_web.MESSAGE import (
     ATTENDANCE_NOT_FOUND,
     ATTENDANCE_UPDATED_MSG,
     CREATE_GENERAL_MSG,
+    INVALID_ROLE,
     MISSING_ARGS_MSG,
 )
 from frontend.helper_web.validate_args import validate_args
@@ -45,17 +47,21 @@ class AttendanceAPI(Resource):
 
     def CREATE(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
-        student_id, course_id, date, status = (
+        student_id, course_id, date, status, session_key = (
             message_body["student_id"],
             message_body["course_id"],
             message_body["date"],
             message_body["status"],
+            message_body["session_key"],
         )
+
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         for variable, validator in {
             "student_id": self.validate_student_id,
@@ -168,17 +174,21 @@ class AttendanceAPI(Resource):
     def UPDATE(self):
         """Replace attendance"""
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "status", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
-        student_id, course_id, date, status = (
+        student_id, course_id, date, status, session_key = (
             message_body["student_id"],
             message_body["course_id"],
             message_body["date"],
             message_body["status"],
+            message_body["session_key"],
         )
+
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         for variable, validator in {
             "student_id": self.validate_student_id,
@@ -219,12 +229,19 @@ class AttendanceAPI(Resource):
     def DELETE(self):
         """Delete attendance"""
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "date"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "date", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
 
-        student_id, course_id, date = (message_body["student_id"], message_body["course_id"], message_body["date"])
+        student_id, course_id, date, session_key = (
+            message_body["student_id"],
+            message_body["course_id"],
+            message_body["date"],
+            message_body["session_key"],
+        )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         for variable, validator in {
             "student_id": self.validate_student_id,

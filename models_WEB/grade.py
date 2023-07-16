@@ -3,7 +3,8 @@ from __future__ import annotations
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
-from frontend.helper_web.MESSAGE import ACTION_MUST_BE_CRUD, CREATE_GRADE_MSG, MISSING_ARGS_MSG
+from frontend.helper_web.have_permission import have_permission
+from frontend.helper_web.MESSAGE import ACTION_MUST_BE_CRUD, CREATE_GRADE_MSG, INVALID_ROLE, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
 
 
@@ -26,11 +27,18 @@ class GradeAPI(Resource):
 
     def CREATE(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "grade"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "grade", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id, course_id, grade = message_body["student_id"], message_body["course_id"], message_body["grade"]
+        student_id, course_id, grade, session_key = (
+            message_body["student_id"],
+            message_body["course_id"],
+            message_body["grade"],
+            message_body["session_key"],
+        )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         cursor.execute(f"INSERT INTO Grades(StudentID, CourseID, Grade) VALUES ('{student_id}', '{course_id}', '{grade}')")
         conn.commit()
@@ -50,6 +58,7 @@ class GradeAPI(Resource):
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
         student_id, course_id = message_body["student_id"], message_body["course_id"]
+
         if (student_id == "") or (course_id == ""):
             return {"message": "student_id and course_id cannot be empty", "data": {}}, 400
 
@@ -72,11 +81,18 @@ class GradeAPI(Resource):
 
     def UPDATE(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id", "grade"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "grade", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id, course_id, grade = message_body["student_id"], message_body["course_id"], message_body["grade"]
+        student_id, course_id, grade, session_key = (
+            message_body["student_id"],
+            message_body["course_id"],
+            message_body["grade"],
+            message_body["session_key"],
+        )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         cursor.execute(f"SELECT * FROM Grades WHERE StudentID = '{student_id}' AND CourseID = '{course_id}'")
         db_result = cursor.fetchone()
@@ -107,11 +123,17 @@ class GradeAPI(Resource):
 
     def DELETE(self):
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "course_id"])
+            request.get_json(silent=True), tuple(["student_id", "course_id", "session_key"])
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id, course_id = message_body["student_id"], message_body["course_id"]
+        student_id, course_id, session_key = (
+            message_body["student_id"],
+            message_body["course_id"],
+            message_body["session_key"],
+        )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         cursor.execute(f"SELECT * FROM Grades WHERE StudentID = '{student_id}' AND CourseID = '{course_id}'")
         db_result = cursor.fetchone()

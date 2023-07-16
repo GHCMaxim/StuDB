@@ -8,7 +8,8 @@ from flask_restful import Resource, request
 from option import Err, Ok, Result
 
 from database.mssql import conn, cursor
-from frontend.helper_web.MESSAGE import ACTION_MUST_BE_CRUD, CREATE_GENERAL_MSG, MISSING_ARGS_MSG
+from frontend.helper_web.have_permission import have_permission
+from frontend.helper_web.MESSAGE import ACTION_MUST_BE_CRUD, CREATE_GENERAL_MSG, INVALID_ROLE, MISSING_ARGS_MSG
 from frontend.helper_web.validate_args import validate_args
 
 if sys.version_info >= (3, 11):
@@ -66,17 +67,21 @@ class StudentAPI(Resource):
     def CREATE(self):
         """Add student"""
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number"])
+            request.get_json(silent=True),
+            tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number", "session_key"]),
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id, student_name, date_of_birth_str, email, phone_number = (
+        student_id, student_name, date_of_birth_str, email, phone_number, session_key = (
             message_body["student_id"],
             message_body["student_name"],
             message_body["date_of_birth"],
             message_body["email"],
             message_body["phone_number"],
+            message_body["session_key"],
         )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         cursor.execute(f"SELECT * FROM Students WHERE StudentID = '{student_id}'")
         if cursor.fetchone() is not None:
@@ -117,17 +122,21 @@ class StudentAPI(Resource):
     def UPDATE(self):
         """Update student"""
         validate_success, message_body, missing_args = validate_args(
-            request.get_json(silent=True), tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number"])
+            request.get_json(silent=True),
+            tuple(["student_id", "student_name", "date_of_birth", "email", "phone_number", "session_key"]),
         )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id, student_name, date_of_birth, email, phone_number = (
+        student_id, student_name, date_of_birth, email, phone_number, session_key = (
             message_body["student_id"],
             message_body["student_name"],
             message_body["date_of_birth"],
             message_body["email"],
             message_body["phone_number"],
+            message_body["session_key"],
         )
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         if (res := self.validate_student_id(student_id)).is_err:
             return {"message": res.unwrap_err()[0], "data": {}}, res.unwrap_err()[1]
@@ -190,10 +199,14 @@ class StudentAPI(Resource):
 
     def DELETE(self):
         """Delete student"""
-        validate_success, message_body, missing_args = validate_args(request.get_json(silent=True), tuple(["student_id"]))
+        validate_success, message_body, missing_args = validate_args(
+            request.get_json(silent=True), tuple(["student_id", "session_key"])
+        )
         if not validate_success:
             return {"message": MISSING_ARGS_MSG(missing_args), "data": {}}, 400
-        student_id = message_body["student_id"]
+        student_id, session_key = message_body["student_id"], message_body["session_key"]
+        if not have_permission(session_key):
+            return {"message": INVALID_ROLE, "data": {}}, 403
 
         cursor.execute(f"SELECT StudentID FROM Students WHERE StudentID = '{student_id}'")
         if cursor.fetchone() is None:
