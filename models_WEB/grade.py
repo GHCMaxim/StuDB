@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from flask_restful import Resource, request
 
 from database.mssql import conn, cursor
