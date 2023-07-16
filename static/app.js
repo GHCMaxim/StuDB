@@ -184,8 +184,8 @@ const handler = {
             }),
         });
         const res = await response.json();
-        window.alert(res.message);
         localStorage.setItem("session_key", res.data.session_key);
+        alert(res.message);
         window.location.reload();
     },
     register: async () => {
@@ -202,7 +202,7 @@ const handler = {
         while (
             !["Student", "Teacher", "Admin"].includes(helper.capitalize(role))
         ) {
-            window.alert("Role must be Student, Teacher or Admin");
+            alert("Role must be Student, Teacher or Admin");
             role = prompt("Enter role of the new account");
             if (role === null) return;
             if (role === "") role = "Student";
@@ -222,7 +222,7 @@ const handler = {
             }),
         });
         const res = await response.json();
-        window.alert(res.message);
+        alert(res.message);
         window.location.reload();
     },
     logout: async () => {
@@ -237,8 +237,8 @@ const handler = {
             }),
         });
         const res = await response.json();
-        window.alert(res.message);
         localStorage.removeItem("session_key");
+        alert(res.message);
         window.location.reload();
     },
 };
