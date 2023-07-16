@@ -2,11 +2,12 @@ def MISSING_ARGS_MSG(missing_args: tuple[str]) -> str:
     return f"Missing arguments: {', '.join(missing_args)}."
 
 
+ATTENDANCE_DELETED = "Attendance deleted."
 ATTENDANCE_FOUND = "Attendance found."
 ATTENDANCE_NOT_FOUND = "Attendance not found."
 ATTENDANCE_EXISTS = "Attendance already exists."
 ATTENDANCE_CREATED = "Attendance created."
-
+ACTION_MUST_BE_CRUD = "Action must be one of 'create', 'read', 'update', 'delete'."
 
 INVALID_SESSION = "Invalid session."
 INVALID_ROLE = "You don't have permission to do that."
