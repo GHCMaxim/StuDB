@@ -24,7 +24,7 @@ const promptInput = {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
             date: "Enter date (YYYY-MM-DD, leave blank for today)",
-            status: "Enter attendance status (1, 0 or leave blank to not change)",
+            status: "Enter attendance status (1, 0 or leave blank to flip)",
         },
         delete: {
             student_id: "Enter student ID",
