@@ -1,5 +1,6 @@
 from database.login import global_var
 
+
 def have_permission(session_key: str, admin_only: bool = False) -> bool:
     valid_session_key = session_key == global_var["session_key"]
     roles = ["Admin"] if admin_only else ["Admin", "Teacher"]
