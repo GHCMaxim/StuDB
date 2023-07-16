@@ -1,12 +1,4 @@
 // region: add/edit/delete/view student/teacher/course/grade/attendance
-
-const actionMethod = {
-    add: "POST",
-    edit: "PUT",
-    delete: "DELETE",
-    view: "GET",
-};
-
 const dataTypeEntryPoint = {
     attendance: "/api/attendance",
     course: "/api/course",
@@ -17,13 +9,18 @@ const dataTypeEntryPoint = {
 
 const promptInput = {
     attendance: {
-        add: {
+        create: {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
             date: "Enter date (YYYY-MM-DD, leave blank for today)",
             status: "Enter attendance status (1 or 0)",
         },
-        edit: {
+        read: {
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+            date: "Enter date (YYYY-MM-DD, leave blank for today)",
+        },
+        update: {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
             date: "Enter date (YYYY-MM-DD, leave blank for today)",
@@ -34,20 +31,18 @@ const promptInput = {
             course_id: "Enter course ID",
             date: "Enter date (YYYY-MM-DD, leave blank for today)",
         },
-        view: {
-            student_id: "Enter student ID",
-            course_id: "Enter course ID",
-            date: "Enter date (YYYY-MM-DD, leave blank for today)",
-        },
     },
     course: {
-        add: {
+        create: {
             course_id: "Enter course ID",
             course_name: "Enter course name",
             teacher_id: "Enter teacher ID",
             credits: "Enter course credit",
         },
-        edit: {
+        read: {
+            course_id: "Enter the course ID to view",
+        },
+        update: {
             course_id: "Enter the course ID to edit",
             course_name: "Enter new course name",
             teacher_id: "Enter new teacher ID",
@@ -56,17 +51,18 @@ const promptInput = {
         delete: {
             course_id: "Enter the course ID to delete",
         },
-        view: {
-            course_id: "Enter the course ID to view",
-        },
     },
     grade: {
-        add: {
+        create: {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
             grade: "Enter grade",
         },
-        edit: {
+        read: {
+            student_id: "Enter student ID",
+            course_id: "Enter course ID",
+        },
+        update: {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
             grade: "Enter new grade",
@@ -75,51 +71,47 @@ const promptInput = {
             student_id: "Enter student ID",
             course_id: "Enter course ID",
         },
-        view: {
-            student_id: "Enter student ID",
-            course_id: "Enter course ID",
-        },
     },
     student: {
-        add: {
+        create: {
             student_id: "Enter student ID",
             student_name: "Enter student name",
-            date_of_birth: "Enter student DOB",
+            date_of_birth: "Enter student DOB (YYYY-MM-DD)",
             email: "Enter student email",
             phone_number: "Enter student phone number",
         },
-        edit: {
+        read: {
+            student_id: "Enter the student ID to view",
+        },
+        update: {
             student_id: "Enter the student ID to edit",
             student_name: "Enter new student name",
-            date_of_birth: "Enter new DOB",
+            date_of_birth: "Enter new DOB (YYYY-MM-DD)",
             email: "Enter new email",
             phone_number: "Enter new phone number",
         },
         delete: {
             student_id: "Enter the student ID to delete",
         },
-        view: {
-            student_id: "Enter the student ID to view",
-        },
     },
     teacher: {
-        add: {
+        create: {
             teacher_name: "Enter teacher name",
             teacher_id: "Enter teacher ID",
-            date_of_birth: "Enter teacher DOB",
+            date_of_birth: "Enter teacher DOB (YYYY-MM-DD)",
             email: "Enter teacher email",
         },
-        edit: {
+        read: {
+            teacher_id: "Enter the teacher ID to view",
+        },
+        update: {
             teacher_id: "Enter the teacher ID to edit",
             teacher_name: "Enter new teacher name",
-            date_of_birth: "Enter new DOB",
+            date_of_birth: "Enter new DOB (YYYY-MM-DD)",
             email: "Enter new email",
         },
         delete: {
             teacher_id: "Enter the teacher ID to delete",
-        },
-        view: {
-            teacher_id: "Enter the teacher ID to view",
         },
     },
 };
@@ -127,13 +119,13 @@ const promptInput = {
 const takeAction = async (method, dataType) => {
     const url = dataTypeEntryPoint[dataType];
     const prompt = promptInput[dataType][method];
-    const data = {};
+    const data = { action: method };
     for (const key in prompt) {
         data[key] = window.prompt(prompt[key]);
         if (data[key] === null) return;
     }
     response = await fetch(url, {
-        method: actionMethod[method],
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
