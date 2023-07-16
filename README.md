@@ -34,12 +34,12 @@ $ pipenv run <command>
 
 Please fill out the `.env` file using `.env_example` as a base.
 
-Afterwards, run:
+Afterwards, run this command for TUI:
 
 ```
 $ pipenv run python main_tui.py
 ```
-or
+or this command for web:
 
 ```
 $ pnpm start
