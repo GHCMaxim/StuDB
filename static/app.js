@@ -116,6 +116,32 @@ const promptInput = {
     },
 };
 
+const createYamlPopup = async (yaml_data) => {
+    const parent = document.querySelector("main");
+    const popup = document.createElement("div");
+    popup.classList.add("popup-container");
+
+    const popupContent = document.createElement("div");
+    popupContent.classList.add("popup-content");
+
+    // use prismjs to generate a html code block from yaml_data
+    html = `<pre class="yaml"><code>${yaml_data}</code></pre>`;
+
+    popupContent.innerHTML = html;
+    popup.appendChild(popupContent);
+
+    const closeBtn = document.createElement("div");
+    closeBtn.classList.add("btn", "btn-danger");
+    closeBtn.innerHTML = "Close";
+
+    closeBtn.addEventListener("click", () => {
+        parent.removeChild(popup);
+    });
+
+    popup.appendChild(closeBtn);
+    parent.appendChild(popup);
+};
+
 const takeAction = async (method, dataType) => {
     const url = dataTypeEntryPoint[dataType];
     const prompt = promptInput[dataType][method];
@@ -132,11 +158,9 @@ const takeAction = async (method, dataType) => {
         body: JSON.stringify(data),
     });
     const res = await response.json();
-    window.alert(res.message);
-    if (res.data) {
-        console.log(res.data);
-        window.alert("Open console to see the data");
-    }
+    alert(res.message);
+    if (Object.keys(res.data).length !== 0)
+        createYamlPopup(jsyaml.dump(res.data));
 };
 
 // endregion
