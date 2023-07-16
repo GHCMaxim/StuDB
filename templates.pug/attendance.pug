@@ -30,10 +30,10 @@ main.home
         .text-center
             h1.display-4.mb-0.text-primary-emphasis ABOUT ATTENDANCE
             h2.display-5.mt-0.text-primary-emphasis Please select an action below
-            button.btn.btn-outline-info.btn-lg(onclick="takeAction('add', 'attendance')") Add Attendance
-            button.btn.btn-outline-info.btn-lg(onclick="takeAction('edit', 'attendance')") Edit Attendance
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('create', 'attendance')") Add Attendance
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('read', 'attendance')") View Attendance
+            button.btn.btn-outline-info.btn-lg(onclick="takeAction('update', 'attendance')") Edit Attendance
             button.btn.btn-outline-info.btn-lg(onclick="takeAction('delete', 'attendance')") Delete Attendance
-            button.btn.btn-outline-info.btn-lg(onclick="takeAction('view', 'attendance')") View Attendance
             button.btn.btn-outline-danger.btn-lg(onclick='goBack()') Back
 script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
 script(src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous')
