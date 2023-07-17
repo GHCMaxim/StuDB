@@ -1,6 +1,13 @@
 # StuDB
 
 A simple database system project using PyMSSQL.
+## Members
+| Username   | Name                           |
+| ---------- | ------------------------------ |
+| GHCMaxim   | Phan Huy Hiep - 20210328       |
+| hacaothu.3 | Cao Thị Thu Hà - 20215271      |
+| namkhanh03 | Đặng Trần Nam Khánh - 20215278 |
+
 
 ## Requirements
 
